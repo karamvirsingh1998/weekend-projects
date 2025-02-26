@@ -14,18 +14,16 @@ const About = () => {
           className="max-w-4xl mx-auto"
         >
           <h2 className="text-4xl font-bold text-center mb-12">About Me</h2>
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div>
-              <img
-                src="/api/placeholder/400/400"
-                alt="Profile"
-                className="rounded-lg shadow-xl"
-              />
-            </div>
-            <div>
-              <p className="text-lg text-gray-300 mb-6">
-                Your detailed biography goes here. Describe your journey, passions, and expertise.
-              </p>
+          <div className="space-y-6">
+            <p className="text-lg text-gray-300">
+              Your detailed biography goes here. Describe your journey, passions, and expertise. This is a great place to share your professional background and what drives you.
+            </p>
+
+            <p className="text-lg text-gray-300">
+              You can elaborate on your career goals, philosophy, or what makes your approach unique. Consider sharing some personal touches that make your portfolio more engaging and authentic.
+            </p>
+
+            <div className="grid md:grid-cols-2 gap-8 mt-8">
               <div className="space-y-4">
                 <div className="flex items-center">
                   <span className="font-semibold mr-2">Education:</span>
@@ -38,6 +36,21 @@ const About = () => {
                 <div className="flex items-center">
                   <span className="font-semibold mr-2">Location:</span>
                   <span className="text-gray-300">Your Location</span>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div className="flex items-center">
+                  <span className="font-semibold mr-2">Languages:</span>
+                  <span className="text-gray-300">List your languages</span>
+                </div>
+                <div className="flex items-center">
+                  <span className="font-semibold mr-2">Current Focus:</span>
+                  <span className="text-gray-300">Your current professional focus</span>
+                </div>
+                <div className="flex items-center">
+                  <span className="font-semibold mr-2">Available for:</span>
+                  <span className="text-gray-300">Freelance, Full-time, etc.</span>
                 </div>
               </div>
             </div>
