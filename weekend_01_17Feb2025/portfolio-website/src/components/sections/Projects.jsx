@@ -30,7 +30,7 @@ const Projects = () => {
         'Streamlined operations across multiple departments'
       ],
       technologies: ['LLMs', 'Transformers', 'MultiModal AI', 'Agentic Systems', 'RAG'],
-      image: 'assets/projects/multimodal-framework.png',
+      image: '/projects/multimodal-framework.png',
       accolades: 'Innovation Award 2024 at UnifyApps'
     },
     {
@@ -45,7 +45,7 @@ const Projects = () => {
         'Improved user satisfaction ratings by 35%'
       ],
       technologies: ['ASR', 'TTS', 'LLMs', 'RAG', 'Query Refinement'],
-      image: 'assets/projects/voice-chatbot.png',
+      image: '/projects/voice-chatbot.png',
       accolades: 'Featured in AI Summit 2023'
     },
     {
@@ -60,7 +60,7 @@ const Projects = () => {
         'Reduced report generation time by 75%'
       ],
       technologies: ['Text-to-SQL', 'Domain-specific LLMs', 'Semantic Parsing', 'Database Integration'],
-      image: 'assets/projects/business-analytics.png',
+      image: '/projects/business-analytics.png',
       accolades: 'Best Enterprise Solution Award'
     },
     {
@@ -75,7 +75,7 @@ const Projects = () => {
         'Reduced serving costs by over 80%'
       ],
       technologies: ['LORA', 'LoRAX', 'Distributed Training', 'Model Quantization', 'GPU Optimization'],
-      image: 'assets/projects/llm-optimization.png',
+      image: '/projects/llm-optimization.png',
       accolades: 'Technical Excellence Award'
     },
     {
@@ -90,7 +90,7 @@ const Projects = () => {
         'Improved first-call resolution by 40%'
       ],
       technologies: ['ASR', 'TTS', 'LLM', 'Wav2vec2', 'Whisper', 'Transformer Architectures'],
-      image: 'assets/projects/conversational-ai.png',
+      image: '/projects/conversational-ai.png',
       accolades: 'Customer Experience Innovation Award'
     },
     {
@@ -105,7 +105,7 @@ const Projects = () => {
         'Reduced infrastructure costs by 60%'
       ],
       technologies: ['Model Quantization', 'Batching', 'Distributed Inference', 'Load Balancing'],
-      image: 'assets/projects/inference-system.png',
+      image: '/projects/inference-system.png',
       accolades: 'Performance Optimization Award'
     },
     {
@@ -120,7 +120,7 @@ const Projects = () => {
         'Reduced latency by 40% compared to previous system'
       ],
       technologies: ['VITS Architecture', 'Neural TTS', 'Voice Synthesis', 'Multi-lingual Support'],
-      image: 'assets/projects/tts-system.png',
+      image: '/projects/tts-system.png',
       accolades: 'Voice Technology Innovation Award'
     },
     {
@@ -135,7 +135,7 @@ const Projects = () => {
         'Released successful Beta Version'
       ],
       technologies: ['LLMs', 'RAG', 'Query Understanding', 'Context Awareness'],
-      image: 'assets/projects/support-bot.png',
+      image: '/projects/support-bot.png',
       accolades: 'Customer Support Solution Award'
     },
     {
@@ -150,7 +150,7 @@ const Projects = () => {
         'Handling 20+ specialized domains'
       ],
       technologies: ['Multi-Agent Systems', 'Routing Algorithms', 'Intent Classification', 'Domain Specialization'],
-      image: 'assets/projects/multi-agent-routing.png',
+      image: '/projects/multi-agent-routing.png',
       accolades: 'AI Architecture Excellence'
     },
     {
@@ -165,7 +165,7 @@ const Projects = () => {
         'Supporting 15+ content verticals'
       ],
       technologies: ['LLMs', 'Content Generation', 'Domain Adaptation', 'Co-pilot Architecture'],
-      image: 'assets/projects/content-copilot.png',
+      image: '/projects/content-copilot.png',
     }
   ];
 

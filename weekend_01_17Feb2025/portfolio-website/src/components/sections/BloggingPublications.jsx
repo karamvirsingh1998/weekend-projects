@@ -25,7 +25,7 @@ const BloggingPublications = () => {
       date: "Jan 15, 2025",
       snippet: "An in-depth exploration of the fundamental differences between encoding and embedding models in AI, clarifying how these seemingly similar processes serve vastly different purposes in machine learning pipelines.",
       link: "https://medium.com/@karamvirhapal/encoding-vs-embedding-models-both-output-numbers-different-stories-5c85eced1801",
-      image: "assets/citations/medium1.png",
+      image: "/citations/medium1.png",
       readTime: "8 min read",
       tags: ["AI", "Machine Learning", "NLP"]
     },
@@ -35,7 +35,7 @@ const BloggingPublications = () => {
       date: "Nov 20, 2024",
       snippet: "A detailed comparison between Langflow and LangGraph, two powerful frameworks for developing AI applications, highlighting their strengths, weaknesses, and ideal use cases to help developers choose the right tool.",
       link: "https://medium.com/@karamvirhapal/langflow-vs-langgraph-a-comprehensive-guide-to-ai-application-development-aca306bb5c31",
-      image: "assets/citations/medium2.png",
+      image: "/citations/medium2.png",
       readTime: "10 min read",
       tags: ["Langflow", "LangGraph", "AI Development"]
     }
@@ -49,7 +49,7 @@ const BloggingPublications = () => {
       completionDate: "2022",
       description: "Comprehensive specialization covering neural networks, deep learning, structuring ML projects, CNNs, and sequence models.",
       link: "https://www.coursera.org/account/accomplishments/specialization/certificate/FDDJVR77JGD7",
-      image: "assets/citations/coursera.png",
+      image: "/citations/coursera.png",
       skills: ["Neural Networks", "Deep Learning", "CNN", "RNN", "TensorFlow"]
     },
     {
@@ -68,7 +68,7 @@ const BloggingPublications = () => {
       completionDate: "2019",
       description: "Comprehensive course covering all aspects of machine learning including regression, classification, clustering, and reinforcement learning.",
       link: "https://www.udemy.com/certificate/UC-L5MS4F1J/",
-      image: "assets/citations/udemy.png",
+      image: "/citations/udemy.png",
       skills: ["Machine Learning", "Regression", "Classification", "Python"]
     }
   ];

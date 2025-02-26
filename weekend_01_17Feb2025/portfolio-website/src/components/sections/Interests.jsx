@@ -44,47 +44,47 @@ const Interests = () => {
       destinations: [
         {
           name: 'Dubai',
-          image: 'assets/interests/dubai.jpeg',
+          image: '/interests/dubai.jpeg',
           description: 'Exploring the blend of modern architecture and rich cultural heritage in Dubai.'
         },
         {
           name: 'Singapore',
-          image: 'assets/interests/singapore.jpeg',
+          image: '/interests/singapore.jpeg',
           description: 'Experiencing the perfect harmony of nature and urban development in Singapore.'
         },
         {
           name: 'Spiti Valley',
-          image: 'assets/interests/spiti.jpeg',
+          image: '/interests/spiti.jpeg',
           description: 'Discovering the untouched beauty and serenity of Spiti Valley.'
         },
         {
           name: 'Manali',
-          image: 'assets/interests/manali.jpeg',
+          image: '/interests/manali.jpeg',
           description: 'Enjoying the breathtaking mountain views and adventure sports in Manali.'
         },
         {
           name: 'Hyderabad',
-          image: 'assets/interests/hyderabad.jpeg',
+          image: '/interests/hyderabad.jpeg',
           description: 'Savoring the historic charm and culinary delights of Hyderabad.'
         },
         {
           name: 'Delhi',
-          image: 'assets/interests/delhi.jpeg',
+          image: '/interests/delhi.jpeg',
           description: 'Exploring the blend of heritage and modernity in Delhi.'
         },
         {
           name: 'Gurgaon',
-          image: 'assets/interests/gurgaon.jpeg',
+          image: '/interests/gurgaon.jpeg',
           description: 'Experiencing the dynamic urban lifestyle and tech culture of Gurgaon.'
         },
         {
           name: 'Ladakh',
-          image: 'assets/interests/ladakh.jpeg',
+          image: '/interests/ladakh.jpeg',
           description: 'Witnessing the majestic landscapes and pristine beauty of Ladakh.'
         },
         {
           name: 'Goa',
-          image: 'assets/interests/goa.jpeg',
+          image: '/interests/goa.jpeg',
           description: 'Relaxing on the beautiful beaches and enjoying the vibrant culture of Goa.'
         }
       ]
@@ -94,31 +94,31 @@ const Interests = () => {
         {
           title: 'Rich Dad Poor Dad',
           author: 'Robert Kiyosaki',
-          image: 'assets/interests/richdad.png',
+          image: '/interests/richdad.png',
           description: 'A personal finance classic that challenges conventional wisdom about money and investing.'
         },
         {
           title: 'The Art of War',
           author: 'Sun Tzu',
-          image: 'assets/interests/artofwar.png',
+          image: '/interests/artofwar.png',
           description: 'Ancient Chinese military treatise with timeless strategic wisdom applicable to various aspects of life.'
         },
         {
           title: 'Seven Habits of Highly Effective People',
           author: 'Stephen R. Covey',
-          image: 'assets/interests/sevenhabits.png',
+          image: '/interests/sevenhabits.png',
           description: 'Powerful lessons in personal change and principles for effectiveness in life and business.'
         },
         {
           title: 'Harry Potter Series',
           author: 'J.K. Rowling',
-          image: 'assets/interests/harrypotter.png',
+          image: '/interests/harrypotter.png',
           description: 'The magical journey of Harry Potter and his friends that captivated millions worldwide.'
         },
         {
           title: 'The Girl in Room 105',
           author: 'Chetan Bhagat',
-          image: 'assets/interests/girlinroom.png',
+          image: '/interests/girlinroom.png',
           description: 'An unlove story that combines mystery, intrigue, and contemporary Indian society.'
         }
       ]
@@ -127,24 +127,24 @@ const Interests = () => {
       projects: [
         {
           title: 'AI Projects',
-          image: 'assets/interests/aiprojects.jpg',
+          image: '/interests/aiprojects.jpg',
           description: 'Building and experimenting with various AI models and applications.'
         },
         {
           title: 'Web Development',
-          image: 'assets/interests/webdev.jpg',
+          image: '/interests/webdev.jpg',
           description: 'Creating responsive and interactive web applications using modern frameworks.'
         },
         {
           title: 'Competitive Programming',
-          image: 'assets/interests/competitive.jpg',
+          image: '/interests/competitive.jpg',
           description: 'Solving algorithmic challenges to sharpen problem-solving skills.'
         }
       ]
     },
     music: {
       journey: {
-        image: 'assets/interests/guitar.jpg',
+        image: '/interests/guitar.jpg',
         description: 'Recently embarked on a musical journey, learning to play the guitar. Exploring various styles and techniques, from basic chords to more complex arrangements. Music provides a creative outlet and balance to my technical pursuits.'
       }
     }

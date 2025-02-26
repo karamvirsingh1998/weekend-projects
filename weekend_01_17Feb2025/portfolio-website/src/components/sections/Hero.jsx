@@ -101,7 +101,7 @@ const Hero = () => {
               transition={{ duration: 0.5 }}
             >
               <img
-                src="src/components/images/profile.jpeg"
+                src="/images/profile.jpeg"
                 alt="Karamvir Singh"
                 className="w-full h-full object-cover"
                 onError={(e) => {
