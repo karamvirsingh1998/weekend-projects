@@ -13,7 +13,7 @@ const BloggingPublications = () => {
       year: 2023,
       abstract: "This research explores how explainable AI models can enhance educational decision-making processes by providing transparent insights and interpretable outcomes, ultimately improving learning experiences and administrative efficiency.",
       link: "https://www.ijraset.com/best-journal/advancing-educational-insights-explainable-ai-models-for-informed-decision-making",
-      image: "assets/citations/paper1.png",
+      image: "/citations/paper1.png",
       tags: ["Explainable AI", "Education", "Decision Making"]
     }
   ];
@@ -58,7 +58,7 @@ const BloggingPublications = () => {
       completionDate: "2020",
       description: "Certificate validating intermediate-level problem-solving skills in algorithms, data structures, and computational thinking.",
       link: "https://www.hackerrank.com/certificates/7f86be3fe508",
-      image: "assets/citations/hackerrank.png",
+      image: "/citations/hackerrank.png",
       skills: ["Algorithms", "Data Structures", "Problem Solving"]
     },
     {
