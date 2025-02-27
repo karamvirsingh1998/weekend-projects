@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
 import { Home, Mail, Phone, Linkedin, Twitter, Calendar, Send, MessageSquare, CheckCircle, AlertCircle, Coffee } from 'lucide-react';
 
 const Contact = () => {
@@ -17,6 +16,24 @@ const Contact = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Load EmailJS script
+  useEffect(() => {
+    // Load EmailJS SDK
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js';
+    script.async = true;
+    document.body.appendChild(script);
+
+    script.onload = () => {
+      // Initialize EmailJS with your public key
+      window.emailjs.init("cDhy7XFq4iYlx6Hv9"); // Replace with your actual EmailJS public key
+    };
+
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
   // Handle form input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -26,27 +43,35 @@ const Contact = () => {
     });
   };
 
-  // Form submission with Formspree
+  // Form submission with EmailJS
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     try {
-      // Replace 'YOUR_FORMSPREE_FORM_ID' with your actual form ID from Formspree
-      const response = await fetch('https://formspree.io/f/YOUR_FORMSPREE_FORM_ID', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
-      });
+      // Create template parameters object
+      const templateParams = {
+        from_name: formData.name,
+        from_email: formData.email,
+        subject: formData.subject,
+        message: formData.message
+      };
 
-      if (response.ok) {
+      // Send email using EmailJS
+      // Replace service_id and template_id with your actual EmailJS service and template IDs
+      const response = await window.emailjs.send(
+        'service_fzddzds', // e.g., 'service_abcdefg'
+        'template_274fpax', // e.g., 'template_hijklmn'
+        templateParams
+      );
+
+      if (response.status === 200) {
         setFormStatus({
           submitted: true,
           success: true,
           message: "Your message has been sent successfully! I'll get back to you soon."
         });
+        // Reset form
         setFormData({
           name: '',
           email: '',
@@ -91,17 +116,6 @@ const Contact = () => {
       </div>
 
       <div className="container mx-auto px-6 sm:px-10 relative z-10">
-        {/* Home Navigation Button */}
-        <div className="flex justify-start mb-16">
-          <a
-            href="#hero"
-            className="flex items-center px-8 py-4 text-xl font-medium text-white bg-gray-800 hover:bg-gray-700 rounded-xl border border-gray-700 shadow-lg transition-all duration-300"
-          >
-            <Home className="w-6 h-6 mr-3" />
-            Back to Home
-          </a>
-        </div>
-
         {/* Section header */}
         <div className="text-center mb-16">
           <h2 className="text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500 inline-block mb-8">
