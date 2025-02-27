@@ -201,7 +201,9 @@ const Hero = () => {
             </motion.div>
 
             {/* Download Resume Button with enhanced styling */}
-            <motion.button
+            <motion.a
+              href="/karamvirResume.pdf"
+              download="Karamvir_Singh_Resume.pdf"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.9 }}
@@ -214,7 +216,7 @@ const Hero = () => {
                 <LucideIcons.Download size={18} className="mr-2" />
                 <span>Download Resume</span>
               </div>
-            </motion.button>
+            </motion.a>
           </div>
         </div>
       </div>
