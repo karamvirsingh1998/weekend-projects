@@ -56,14 +56,23 @@ const Header = ({ activeSection, setActiveSection }) => {
     }
   ];
 
+  // Updated navigation handler with improved scroll behavior
   const handleNavClick = (id) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-      setActiveSection(id);
-      setIsMobileMenuOpen(false);
-    }
-  };
+      const element = document.getElementById(id);
+      if (element) {
+          // Get the header height
+          const headerHeight = document.querySelector('header')?.offsetHeight || 80;
+          // Get the element's position
+          const elementPosition = element.offsetTop;
+          // Scroll to the element with an offset for the header
+          window.scrollTo({
+              top: elementPosition - headerHeight - 20, // Added extra 20px for breathing room
+              behavior: 'smooth'
+              });
+          setActiveSection(id);
+          setIsMobileMenuOpen(false);
+          }
+      };
 
   const NavItem = ({ item, index }) => {
     const isActive = activeSection === item.id;

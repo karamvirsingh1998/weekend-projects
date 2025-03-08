@@ -1,11 +1,17 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, Lightbulb, MessageCircle, Sparkles, Zap, Layers, HelpCircle, Briefcase, DollarSign, BarChart, Bot, ChevronDown, ChevronUp, Star, Circle } from 'lucide-react';
+import {
+  Home, Lightbulb, MessageCircle, Sparkles, Zap, Layers,
+  HelpCircle, Briefcase, BarChart, Bot, Star, Circle,
+  X, ChevronLeft, ChevronRight, ArrowRight
+} from 'lucide-react';
 
 const Ideas = () => {
-  const [expandedIdea, setExpandedIdea] = useState(null);
+  const [selectedIdea, setSelectedIdea] = useState(null);
   const [hoverIdea, setHoverIdea] = useState(null);
-  const containerRef = useRef(null);
+  const carouselRef = useRef(null);
+  const [showLeftArrow, setShowLeftArrow] = useState(false);
+  const [showRightArrow, setShowRightArrow] = useState(true);
 
   // Ideas with enhanced data
   const ideas = [
@@ -106,26 +112,26 @@ const Ideas = () => {
     }
   ];
 
-  // Expand/collapse idea details
-  const toggleIdea = (id) => {
-    setExpandedIdea(expandedIdea === id ? null : id);
+  const getCategoryColor = (category) => {
+    const colors = {
+      "Enterprise AI": "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
+      "FinTech": "bg-blue-500/20 text-blue-400 border-blue-500/30",
+      "Conversational AI": "bg-amber-500/20 text-amber-400 border-amber-500/30",
+      "Legal Tech": "bg-purple-500/20 text-purple-400 border-purple-500/30",
+      "Developer Tools": "bg-pink-500/20 text-pink-400 border-pink-500/30"
+    };
+    return colors[category] || "bg-gray-500/20 text-gray-400 border-gray-500/30";
+  };
 
-    // Scroll to the expanded idea
-    if (expandedIdea !== id && containerRef.current) {
-      setTimeout(() => {
-        const element = document.getElementById(`idea-${id}`);
-        if (element) {
-          const container = containerRef.current;
-          const elementPosition = element.offsetTop;
-          const containerScrollTop = container.scrollTop;
-          const containerHeight = container.clientHeight;
-
-          if (elementPosition < containerScrollTop || elementPosition > containerScrollTop + containerHeight) {
-            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
-        }
-      }, 100);
-    }
+  const getIconBgColor = (category) => {
+    const colors = {
+      "Enterprise AI": "bg-emerald-500/20 text-emerald-400",
+      "FinTech": "bg-blue-500/20 text-blue-400",
+      "Conversational AI": "bg-amber-500/20 text-amber-400",
+      "Legal Tech": "bg-purple-500/20 text-purple-400",
+      "Developer Tools": "bg-pink-500/20 text-pink-400"
+    };
+    return colors[category] || "bg-gray-500/20 text-gray-400";
   };
 
   const getStatusColor = (color) => {
@@ -139,177 +145,269 @@ const Ideas = () => {
     return colors[color] || colors.blue;
   };
 
+  // Check if carousel needs navigation arrows
+  useEffect(() => {
+    const checkScrollPosition = () => {
+      if (!carouselRef.current) return;
+
+      const { scrollLeft, scrollWidth, clientWidth } = carouselRef.current;
+      setShowLeftArrow(scrollLeft > 20);
+      setShowRightArrow(scrollLeft < scrollWidth - clientWidth - 20);
+    };
+
+    const carousel = carouselRef.current;
+    if (carousel) {
+      carousel.addEventListener('scroll', checkScrollPosition);
+      checkScrollPosition(); // Initial check
+
+      // Check after images and content might have loaded
+      setTimeout(checkScrollPosition, 500);
+
+      return () => carousel.removeEventListener('scroll', checkScrollPosition);
+    }
+  }, []);
+
+  // Scroll the carousel
+  const scrollCarousel = (direction) => {
+    if (!carouselRef.current) return;
+
+    const { clientWidth } = carouselRef.current;
+    const scrollAmount = clientWidth * 0.8;
+
+    carouselRef.current.scrollBy({
+      left: direction === 'left' ? -scrollAmount : scrollAmount,
+      behavior: 'smooth'
+    });
+  };
+
   return (
-    <section id="ideas" className="py-32 bg-gradient-to-b from-gray-900 to-gray-800 relative overflow-hidden">
+    <section id="ideas" className="py-20 bg-gradient-to-b from-gray-900 to-gray-800 relative overflow-hidden">
       {/* Background decorations */}
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-0 opacity-30">
         <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-yellow-900/20 via-gray-900/0 to-gray-900/0"></div>
+        <Lightbulb className="absolute top-40 left-20 text-yellow-500/10" size={200} strokeWidth={1} />
+        <Sparkles className="absolute bottom-40 right-20 text-amber-500/10" size={150} strokeWidth={1} />
       </div>
 
-      <div className="container mx-auto px-6 sm:px-10 relative z-10">
+      <div className="container mx-auto px-6 relative z-10">
         {/* Home Navigation Button */}
-        <div className="flex justify-start mb-16">
-          <a
-            href="#hero"
-            className="flex items-center px-8 py-4 text-xl font-medium text-white bg-gray-800 hover:bg-gray-700 rounded-xl border border-gray-700 shadow-lg transition-all duration-300"
-          >
-            <Home className="w-6 h-6 mr-3" />
-            Back to Home
-          </a>
-        </div>
+
 
         {/* Section header */}
-        <div className="text-center mb-16">
-          <h2 className="text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-amber-500 inline-block mb-8">
+        <div className="text-center mb-12">
+          <h2 className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-amber-500 inline-block mb-4">
             Future Innovations
           </h2>
-          <p className="text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
-            Exploring the intersection of imagination and possibility with these conceptual projects
+          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+            Exploring the intersection of imagination and possibility
           </p>
-          <div className="w-40 h-2 bg-gradient-to-r from-yellow-400 to-amber-500 mx-auto mt-10 rounded-full"></div>
         </div>
 
-        {/* Lightbulb decoration */}
-        <div className="absolute top-40 left-0 text-yellow-500/5 transform -rotate-12">
-          <Lightbulb size={400} strokeWidth={1} />
-        </div>
-        <div className="absolute bottom-40 right-0 text-amber-500/5 transform rotate-12">
-          <Sparkles size={300} strokeWidth={1} />
-        </div>
-
-        {/* Ideas Grid */}
-        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10" ref={containerRef}>
-          {ideas.map((idea) => (
-            <motion.div
-              id={`idea-${idea.id}`}
-              key={idea.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.5 }}
-              className={`bg-gray-800/90 backdrop-blur-sm rounded-2xl overflow-hidden border shadow-xl transition-all duration-300 ${
-                expandedIdea === idea.id
-                  ? "border-yellow-500"
-                  : hoverIdea === idea.id
-                  ? "border-yellow-500/50"
-                  : "border-gray-700"
-              }`}
-              onMouseEnter={() => setHoverIdea(idea.id)}
-              onMouseLeave={() => setHoverIdea(null)}
+        {/* Horizontal Carousel */}
+        <div className="relative">
+          {/* Left Navigation Arrow */}
+          {showLeftArrow && (
+            <button
+              onClick={() => scrollCarousel('left')}
+              className="absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-gray-800/80 backdrop-blur-sm p-3 rounded-full border border-gray-700 text-white shadow-lg hover:bg-gray-700 transition-all"
             >
-              {/* Card header */}
-              <div
-                className={`p-6 cursor-pointer ${
-                  expandedIdea === idea.id
-                    ? "bg-gradient-to-r from-yellow-500/20 to-amber-500/10"
-                    : "hover:bg-gray-700/50"
+              <ChevronLeft size={24} />
+            </button>
+          )}
+
+          {/* Ideas Carousel */}
+          <div
+            ref={carouselRef}
+            className="flex overflow-x-auto pb-8 pt-4 px-4 snap-x snap-mandatory hide-scrollbar"
+            style={{ scrollbarWidth: 'none' }}
+          >
+            {ideas.map((idea) => (
+              <motion.div
+                key={idea.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: idea.id * 0.1 }}
+                className={`snap-start flex-shrink-0 w-72 mx-3 bg-gray-800/90 backdrop-blur-sm rounded-xl overflow-hidden border shadow-xl transition-all duration-300 ${
+                  hoverIdea === idea.id
+                    ? "border-yellow-500/50 transform scale-105"
+                    : "border-gray-700 hover:border-gray-500"
                 }`}
-                onClick={() => toggleIdea(idea.id)}
+                onMouseEnter={() => setHoverIdea(idea.id)}
+                onMouseLeave={() => setHoverIdea(null)}
+                onClick={() => setSelectedIdea(idea)}
               >
-                <div className="flex justify-between items-start">
-                  <div className="flex items-start">
-                    <div className={`p-3 rounded-xl mr-4 ${
-                      expandedIdea === idea.id
-                        ? "bg-yellow-500/20 text-yellow-300"
-                        : "bg-gray-700/80 text-gray-300"
-                    }`}>
-                      {React.cloneElement(idea.icon, { size: 24 })}
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-bold text-white mb-2">{idea.title}</h3>
-                      <div className="flex flex-wrap gap-2 mb-3">
-                        <span className="px-3 py-1 bg-gray-700/80 text-gray-300 rounded-full text-sm font-medium border border-gray-600">
-                          {idea.category}
-                        </span>
-                        <span className={`px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(idea.statusColor)}`}>
-                          {idea.status}
-                        </span>
-                      </div>
-                    </div>
+                <div className="p-5 h-full flex flex-col">
+                  {/* Card Icon */}
+                  <div className={`p-3 rounded-xl w-12 h-12 flex items-center justify-center mb-4 ${getIconBgColor(idea.category)}`}>
+                    {React.cloneElement(idea.icon, { size: 24 })}
                   </div>
-                  <button className="p-2 text-gray-400 hover:text-white transition-colors">
-                    {expandedIdea === idea.id ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+
+                  {/* Card Content */}
+                  <div className="flex-grow">
+                    <h3 className="text-xl font-bold text-white mb-3 line-clamp-2">{idea.title}</h3>
+                    <p className="text-gray-400 text-sm mb-4 line-clamp-3">{idea.description}</p>
+                  </div>
+
+                  {/* Card Footer */}
+                  <div className="mt-auto">
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      <span className={`px-2 py-1 rounded-lg text-xs font-medium ${getCategoryColor(idea.category)}`}>
+                        {idea.category}
+                      </span>
+                      <span className={`px-2 py-1 rounded-lg text-xs font-medium ${getStatusColor(idea.statusColor)}`}>
+                        {idea.status}
+                      </span>
+                    </div>
+                    <button
+                      className="w-full mt-2 px-4 py-2 bg-gray-700/60 hover:bg-yellow-600/20 border border-gray-600 hover:border-yellow-600/40 rounded-lg text-gray-300 hover:text-yellow-400 transition-colors flex items-center justify-center text-sm font-medium"
+                    >
+                      <span>View Details</span>
+                      <ArrowRight size={16} className="ml-2" />
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+
+            {/* Final CTA Card */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.6 }}
+              className="snap-start flex-shrink-0 w-72 mx-3 bg-gradient-to-br from-yellow-500/30 to-amber-600/20 backdrop-blur-sm rounded-xl overflow-hidden border border-yellow-500/30 shadow-xl flex items-center justify-center"
+            >
+              <div className="p-6 text-center">
+                <Lightbulb className="w-12 h-12 text-yellow-400 mx-auto mb-4" />
+                <h3 className="text-xl font-bold text-white mb-2">Have an idea?</h3>
+                <p className="text-gray-300 mb-4 text-sm">Let's collaborate on your next innovation</p>
+                <a
+                  href="#contact"
+                  className="px-4 py-2 bg-gradient-to-r from-yellow-500 to-amber-600 text-white rounded-lg font-medium inline-flex items-center transition-transform hover:scale-105"
+                >
+                  <MessageCircle className="w-4 h-4 mr-2" />
+                  Discuss Your Idea
+                </a>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Right Navigation Arrow */}
+          {showRightArrow && (
+            <button
+              onClick={() => scrollCarousel('right')}
+              className="absolute right-0 top-1/2 -translate-y-1/2 z-20 bg-gray-800/80 backdrop-blur-sm p-3 rounded-full border border-gray-700 text-white shadow-lg hover:bg-gray-700 transition-all"
+            >
+              <ChevronRight size={24} />
+            </button>
+          )}
+        </div>
+
+        {/* Modal for Detailed View */}
+        <AnimatePresence>
+          {selectedIdea && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+              onClick={() => setSelectedIdea(null)}
+            >
+              <motion.div
+                initial={{ scale: 0.9, y: 20 }}
+                animate={{ scale: 1, y: 0 }}
+                exit={{ scale: 0.9, y: 20 }}
+                transition={{ type: "spring", damping: 25 }}
+                className="bg-gray-800 border border-gray-700 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {/* Modal Header */}
+                <div className="sticky top-0 bg-gray-800 border-b border-gray-700 p-5 flex justify-between items-center z-10">
+                  <div className="flex items-center gap-3">
+                    <div className={`p-2 rounded-lg ${getIconBgColor(selectedIdea.category)}`}>
+                      {React.cloneElement(selectedIdea.icon, { size: 20 })}
+                    </div>
+                    <h3 className="text-xl font-bold text-white">{selectedIdea.title}</h3>
+                  </div>
+                  <button
+                    onClick={() => setSelectedIdea(null)}
+                    className="p-2 text-gray-400 hover:text-white rounded-full hover:bg-gray-700/50"
+                  >
+                    <X size={20} />
                   </button>
                 </div>
-                <p className="text-gray-300 mt-3">{idea.description}</p>
-              </div>
 
-              {/* Expandable content */}
-              <AnimatePresence>
-                {expandedIdea === idea.id && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="overflow-hidden"
-                  >
-                    <div className="px-6 pb-6">
-                      {/* Key features */}
-                      <div className="mb-6">
-                        <h4 className="text-lg font-semibold text-yellow-400 mb-3 flex items-center">
-                          <Layers className="w-5 h-5 mr-2" />
-                          Key Features
-                        </h4>
-                        <ul className="space-y-2 pl-2">
-                          {idea.details.map((detail, idx) => (
-                            <li key={idx} className="flex items-start">
-                              <span className="text-yellow-500 mr-2 mt-1.5">
-                                <Circle size={6} fill="currentColor" />
-                              </span>
-                              <span className="text-gray-300">{detail}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
+                {/* Modal Content */}
+                <div className="p-5">
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${getCategoryColor(selectedIdea.category)}`}>
+                      {selectedIdea.category}
+                    </span>
+                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(selectedIdea.statusColor)}`}>
+                      {selectedIdea.status}
+                    </span>
+                  </div>
 
-                      {/* Implementation details */}
-                      <div className="space-y-4">
-                        <div>
-                          <h4 className="text-white font-semibold flex items-center">
-                            <Zap className="w-4 h-4 text-amber-400 mr-2" />
-                            Challenge
-                          </h4>
-                          <p className="text-gray-400 ml-6">{idea.challenge}</p>
-                        </div>
-                        <div>
-                          <h4 className="text-white font-semibold flex items-center">
-                            <Star className="w-4 h-4 text-amber-400 mr-2" />
-                            Potential Impact
-                          </h4>
-                          <p className="text-gray-400 ml-6">{idea.potentialImpact}</p>
-                        </div>
-                        <div>
-                          <h4 className="text-white font-semibold flex items-center">
-                            <Bot className="w-4 h-4 text-amber-400 mr-2" />
-                            Implementation
-                          </h4>
-                          <p className="text-gray-400 ml-6">{idea.implementation}</p>
-                        </div>
-                      </div>
+                  <p className="text-gray-300 mb-6">{selectedIdea.description}</p>
+
+                  {/* Key features */}
+                  <div className="mb-6">
+                    <h4 className="text-lg font-semibold text-yellow-400 mb-3 flex items-center">
+                      <Layers className="w-5 h-5 mr-2" />
+                      Key Features
+                    </h4>
+                    <ul className="grid grid-cols-1 md:grid-cols-2 gap-2 pl-2">
+                      {selectedIdea.details.map((detail, idx) => (
+                        <li key={idx} className="flex items-start">
+                          <span className="text-yellow-500 mr-2 mt-1.5">
+                            <Circle size={6} fill="currentColor" />
+                          </span>
+                          <span className="text-gray-300">{detail}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Implementation details */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="bg-gray-700/30 p-4 rounded-xl">
+                      <h4 className="text-white font-semibold flex items-center mb-2">
+                        <Zap className="w-4 h-4 text-amber-400 mr-2" />
+                        Challenge
+                      </h4>
+                      <p className="text-gray-400 text-sm">{selectedIdea.challenge}</p>
                     </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.div>
-          ))}
-        </div>
+                    <div className="bg-gray-700/30 p-4 rounded-xl">
+                      <h4 className="text-white font-semibold flex items-center mb-2">
+                        <Star className="w-4 h-4 text-amber-400 mr-2" />
+                        Potential Impact
+                      </h4>
+                      <p className="text-gray-400 text-sm">{selectedIdea.potentialImpact}</p>
+                    </div>
+                    <div className="bg-gray-700/30 p-4 rounded-xl">
+                      <h4 className="text-white font-semibold flex items-center mb-2">
+                        <Bot className="w-4 h-4 text-amber-400 mr-2" />
+                        Implementation
+                      </h4>
+                      <p className="text-gray-400 text-sm">{selectedIdea.implementation}</p>
+                    </div>
+                  </div>
 
-        {/* Call to action */}
-        <div className="max-w-3xl mx-auto mt-20 text-center">
-          <div className="bg-gradient-to-r from-yellow-500/20 to-amber-500/20 rounded-2xl p-8 backdrop-blur-sm border border-yellow-500/30">
-            <Lightbulb className="w-16 h-16 text-yellow-400 mx-auto mb-6" />
-            <h3 className="text-2xl font-bold text-white mb-4">Have an innovative idea to collaborate on?</h3>
-            <p className="text-gray-300 mb-8 text-lg">I'm always open to discussing new concepts and potential collaborations in AI, automation, and intelligent systems.</p>
-            <a
-              href="#contact"
-              className="px-8 py-4 bg-gradient-to-r from-yellow-500 to-amber-600 text-white rounded-xl font-medium inline-flex items-center transition-transform hover:scale-105"
-            >
-              <MessageCircle className="w-5 h-5 mr-2" />
-              Let's Discuss Your Idea
-            </a>
-          </div>
-        </div>
+                  {/* CTA Button */}
+                  <div className="mt-8 text-center">
+                    <a
+                      href="#contact"
+                      onClick={() => setSelectedIdea(null)}
+                      className="px-6 py-3 bg-gradient-to-r from-yellow-500 to-amber-600 text-white rounded-xl font-medium inline-flex items-center transition-transform hover:scale-105"
+                    >
+                      <MessageCircle className="w-5 h-5 mr-2" />
+                      Discuss This Idea
+                    </a>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </section>
   );

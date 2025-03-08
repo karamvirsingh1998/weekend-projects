@@ -5,6 +5,20 @@ const Skills = () => {
   const [activeCategory, setActiveCategory] = useState('all');
 
   // Skill categories from resume
+  const scrollToSection = (id) => {
+      const element = document.getElementById(id);
+      if (element) {
+          // Get header height for offset calculation
+          const headerHeight = document.querySelector('header')?.offsetHeight || 0;
+          // Calculate the element's position
+          const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+          // Scroll with offset
+          window.scrollTo({
+              top: elementPosition - headerHeight,
+              behavior: 'smooth'
+              });
+          }
+      };
   const skillCategories = [
     {
       id: 'programming',
@@ -45,15 +59,6 @@ const Skills = () => {
     <section id="skills" className="py-20 bg-gray-900">
       <div className="container mx-auto px-6">
         {/* Back to Home */}
-        <div className="mb-10">
-          <a
-            href="#hero"
-            className="inline-flex items-center px-4 py-2 bg-gray-800 text-white rounded-lg"
-          >
-            <Home className="w-5 h-5 mr-2" />
-            Back to Home
-          </a>
-        </div>
 
         {/* Section header */}
         <div className="text-center mb-16">

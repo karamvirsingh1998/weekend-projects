@@ -9,6 +9,20 @@ const Contact = () => {
     subject: '',
     message: ''
   });
+  const scrollToSection = (id) => {
+      const element = document.getElementById(id);
+      if (element) {
+          // Get header height for offset calculation
+          const headerHeight = document.querySelector('header')?.offsetHeight || 0;
+          // Calculate the element's position
+          const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+          // Scroll with offset
+          window.scrollTo({
+              top: elementPosition - headerHeight,
+              behavior: 'smooth'
+              });
+          }
+      };
   const [formStatus, setFormStatus] = useState({
     submitted: false,
     success: false,

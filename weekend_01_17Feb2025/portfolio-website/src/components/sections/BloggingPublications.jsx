@@ -17,6 +17,20 @@ const BloggingPublications = () => {
       tags: ["Explainable AI", "Education", "Decision Making"]
     }
   ];
+  const scrollToSection = (id) => {
+      const element = document.getElementById(id);
+      if (element) {
+          // Get header height for offset calculation
+          const headerHeight = document.querySelector('header')?.offsetHeight || 0;
+          // Calculate the element's position
+          const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+          // Scroll with offset
+          window.scrollTo({
+              top: elementPosition - headerHeight,
+              behavior: 'smooth'
+              });
+          }
+      };
 
   const blogs = [
     {
@@ -102,15 +116,6 @@ const BloggingPublications = () => {
     <section id="publications" className="min-h-screen py-32 bg-gradient-to-b from-gray-900 to-gray-800 overflow-hidden">
       <div className="container mx-auto px-6 sm:px-10">
         {/* Home Navigation Button */}
-        <div className="flex justify-start mb-16">
-          <a
-            href="#hero"
-            className="flex items-center px-8 py-4 text-xl font-medium text-white bg-gray-800 hover:bg-gray-700 rounded-xl border border-gray-700 shadow-lg transition-all duration-300"
-          >
-            <Home className="w-6 h-6 mr-3" />
-            Back to Home
-          </a>
-        </div>
 
         <div className="max-w-6xl mx-auto">
           {/* Header with parallax effect */}
