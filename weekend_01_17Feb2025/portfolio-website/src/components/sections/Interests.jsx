@@ -5,7 +5,7 @@ const Interests = () => {
   const [activeTab, setActiveTab] = useState('travel');
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [fullscreenImage, setFullscreenImage] = useState(null);
-  const [viewMode, setViewMode] = useState('gallery'); // 'gallery' or 'carousel'
+  const [viewMode, setViewMode] = useState('carousel'); // 'gallery' or 'carousel'
 
   // Interest categories
   const interestCategories = [

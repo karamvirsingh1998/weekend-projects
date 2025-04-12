@@ -1,363 +1,267 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { ChevronRight, ExternalLink, BookOpen, Newspaper, Award, ArrowRight, Home } from 'lucide-react';
+import { BookOpen, ExternalLink, Filter, ArrowRight, Home } from 'lucide-react';
 
-const BloggingPublications = () => {
-  const [activeTab, setActiveTab] = useState('publications');
-
-  // Data for each section
-  const publications = [
+// Knowledge Sharing Component - A unified academic portfolio display
+const KnowledgeSharing = () => {
+  const [filter, setFilter] = useState('all');
+  
+  // Combined data for all items
+  const items = [
+    // Publication
     {
+      id: 1,
+      type: 'publication',
       title: "Advancing Educational Insights: Explainable AI Models for Informed Decision Making",
-      journal: "International Journal of Research in Applied Science & Engineering Technology",
-      year: 2023,
-      abstract: "This research explores how explainable AI models can enhance educational decision-making processes by providing transparent insights and interpretable outcomes, ultimately improving learning experiences and administrative efficiency.",
+      source: "International Journal of Research in Applied Science & Engineering Technology",
+      date: "2023",
+      description: "This research explores how explainable AI models can enhance educational decision-making processes by providing transparent insights and interpretable outcomes.",
       link: "https://www.ijraset.com/best-journal/advancing-educational-insights-explainable-ai-models-for-informed-decision-making",
       image: "/citations/paper1.png",
       tags: ["Explainable AI", "Education", "Decision Making"]
-    }
-  ];
-  const scrollToSection = (id) => {
-      const element = document.getElementById(id);
-      if (element) {
-          // Get header height for offset calculation
-          const headerHeight = document.querySelector('header')?.offsetHeight || 0;
-          // Calculate the element's position
-          const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
-          // Scroll with offset
-          window.scrollTo({
-              top: elementPosition - headerHeight,
-              behavior: 'smooth'
-              });
-          }
-      };
-
-  const blogs = [
+    },
+    // Blogs
     {
+      id: 2,
+      type: 'blog',
       title: "Encoding vs Embedding Models: Both Output Numbers, Different Stories",
-      platform: "Medium",
+      source: "Medium",
       date: "Jan 15, 2025",
-      snippet: "An in-depth exploration of the fundamental differences between encoding and embedding models in AI, clarifying how these seemingly similar processes serve vastly different purposes in machine learning pipelines.",
+      description: "An in-depth exploration of the fundamental differences between encoding and embedding models in AI, clarifying how these seemingly similar processes serve vastly different purposes.",
       link: "https://medium.com/@karamvirhapal/encoding-vs-embedding-models-both-output-numbers-different-stories-5c85eced1801",
       image: "/citations/medium1.png",
       readTime: "8 min read",
       tags: ["AI", "Machine Learning", "NLP"]
     },
     {
+      id: 3,
+      type: 'blog',
       title: "Langflow vs LangGraph: A Comprehensive Guide to AI Application Development",
-      platform: "Medium",
+      source: "Medium",
       date: "Nov 20, 2024",
-      snippet: "A detailed comparison between Langflow and LangGraph, two powerful frameworks for developing AI applications, highlighting their strengths, weaknesses, and ideal use cases to help developers choose the right tool.",
+      description: "A detailed comparison between Langflow and LangGraph, two powerful frameworks for developing AI applications, highlighting their strengths, weaknesses, and ideal use cases.",
       link: "https://medium.com/@karamvirhapal/langflow-vs-langgraph-a-comprehensive-guide-to-ai-application-development-aca306bb5c31",
       image: "/citations/medium2.png",
       readTime: "10 min read",
       tags: ["Langflow", "LangGraph", "AI Development"]
-    }
-  ];
-
-  const courses = [
+    },
+    // Courses
     {
+      id: 4,
+      type: 'course',
       title: "Deep Learning Specialization",
-      platform: "Coursera",
+      source: "Coursera",
       instructor: "Andrew Ng",
-      completionDate: "2022",
+      date: "2022",
       description: "Comprehensive specialization covering neural networks, deep learning, structuring ML projects, CNNs, and sequence models.",
       link: "https://www.coursera.org/account/accomplishments/specialization/certificate/FDDJVR77JGD7",
       image: "/citations/coursera.png",
-      skills: ["Neural Networks", "Deep Learning", "CNN", "RNN", "TensorFlow"]
+      tags: ["Neural Networks", "Deep Learning", "CNN", "RNN", "TensorFlow"]
     },
     {
+      id: 5,
+      type: 'course',
       title: "Problem Solving Certificate",
-      platform: "HackerRank",
-      completionDate: "2020",
+      source: "HackerRank",
+      date: "2020",
       description: "Certificate validating intermediate-level problem-solving skills in algorithms, data structures, and computational thinking.",
       link: "https://www.hackerrank.com/certificates/7f86be3fe508",
       image: "/citations/hackerrank.png",
-      skills: ["Algorithms", "Data Structures", "Problem Solving"]
+      tags: ["Algorithms", "Data Structures", "Problem Solving"]
     },
     {
+      id: 6,
+      type: 'course',
       title: "Machine Learning A-Z",
-      platform: "Udemy",
+      source: "Udemy",
       instructor: "Kirill Eremenko & Hadelin de Ponteves",
-      completionDate: "2019",
+      date: "2019",
       description: "Comprehensive course covering all aspects of machine learning including regression, classification, clustering, and reinforcement learning.",
       link: "https://www.udemy.com/certificate/UC-L5MS4F1J/",
       image: "/citations/udemy.png",
-      skills: ["Machine Learning", "Regression", "Classification", "Python"]
+      tags: ["Machine Learning", "Regression", "Classification", "Python"]
     }
   ];
 
-  // Animations
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
+  // Filter items based on current filter
+  const filteredItems = filter === 'all' 
+    ? items 
+    : items.filter(item => item.type === filter);
+  
+  // Navigate to sections
+  const scrollToSection = (id) => {
+    const element = document.getElementById(id);
+    if (element) {
+      const headerHeight = document.querySelector('header')?.offsetHeight || 0;
+      const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+      window.scrollTo({
+        top: elementPosition - headerHeight,
+        behavior: 'smooth'
+      });
     }
   };
 
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1
+  // Type-specific styling
+  const getTypeStyles = (type) => {
+    switch(type) {
+      case 'publication':
+        return {
+          badge: 'bg-blue-600 text-white',
+          border: 'border-blue-500',
+          tag: 'bg-blue-900/40 text-blue-300'
+        };
+      case 'blog':
+        return {
+          badge: 'bg-purple-600 text-white',
+          border: 'border-purple-500',
+          tag: 'bg-purple-900/40 text-purple-300'
+        };
+      case 'course':
+        return {
+          badge: 'bg-green-600 text-white',
+          border: 'border-green-500',
+          tag: 'bg-green-900/40 text-green-300'
+        };
+      default:
+        return {
+          badge: 'bg-gray-600 text-white',
+          border: 'border-gray-500',
+          tag: 'bg-gray-700 text-gray-300'
+        };
     }
-  };
-
-  const tabIcons = {
-    publications: <BookOpen className="w-6 h-6" />,
-    blogs: <Newspaper className="w-6 h-6" />,
-    courses: <Award className="w-6 h-6" />
   };
 
   return (
-    <section id="publications" className="min-h-screen py-32 bg-gradient-to-b from-gray-900 to-gray-800 overflow-hidden">
-      <div className="container mx-auto px-6 sm:px-10">
-        {/* Home Navigation Button */}
-
+    <section id="publications" className="py-24 bg-gradient-to-b from-gray-900 to-gray-800">
+      <div className="container mx-auto px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
-          {/* Header with parallax effect */}
-          <motion.div
-            className="text-center mb-24 relative"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <div className="absolute inset-0 flex justify-center items-center -z-10">
-              <div className="w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"></div>
+          {/* Header */}
+          <div className="mb-16 text-center">
+            <div className="flex items-center justify-center gap-4 mb-6">
+              {/* Home Button */}
+              <button
+                onClick={() => scrollToSection('hero')}
+                className="p-3 rounded-full bg-gray-800 hover:bg-gray-700 border border-gray-700 transition-colors"
+                aria-label="Back to home"
+              >
+                <Home className="w-5 h-5 text-gray-300" />
+              </button>
+              
+              <h2 className="text-4xl sm:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500 inline-block">
+                Knowledge Sharing
+              </h2>
             </div>
-            <h2 className="text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500 inline-block mb-8">
-              Knowledge Sharing
-            </h2>
-            <p className="text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
-              Explore my research publications, blog posts, and professional certifications that showcase my journey and expertise in AI and software engineering.
+            
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+              Research publications, blog posts, and professional certifications that showcase my expertise in AI engineering.
             </p>
-            <div className="w-40 h-2 bg-gradient-to-r from-blue-400 to-purple-500 mx-auto mt-10 rounded-full"></div>
-          </motion.div>
-
-          {/* Tab Navigation */}
-          <div className="flex justify-center mb-20">
-                          <div className="inline-flex p-2.5 bg-gray-800 rounded-2xl shadow-xl">
-              {['publications', 'blogs', 'courses'].map((tab) => (
-                <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
-                  className={`px-12 py-5 rounded-xl text-xl font-medium transition-all duration-300 flex items-center ${
-                    activeTab === tab
-                      ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg transform scale-105'
-                      : 'text-gray-400 hover:text-white hover:bg-gray-700'
-                  }`}
-                >
-                  {tabIcons[tab]}
-                  <span className="ml-3 capitalize">{tab}</span>
-                </button>
-              ))}
-            </div>
+            <div className="w-24 h-1 bg-gradient-to-r from-blue-400 to-purple-500 mx-auto mt-6 rounded-full"></div>
           </div>
 
-          {/* Publications Tab */}
-          {activeTab === 'publications' && (
-            <motion.div
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-              className="space-y-12"
-            >
-              {publications.map((pub) => (
-                <motion.div
-                  key={pub.title}
-                  variants={itemVariants}
-                  className="bg-gray-800 rounded-3xl overflow-hidden shadow-xl border border-gray-700 hover:border-blue-500 transition-all duration-300 transform hover:scale-[1.02]"
+          {/* Filter Pills */}
+          <div className="flex flex-wrap justify-center gap-2 mb-10">
+            {['all', 'publication', 'blog', 'course'].map((type) => (
+              <button
+                key={type}
+                onClick={() => setFilter(type)}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                  filter === type
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                }`}
+              >
+                {type === 'all' ? 'All' : `${type.charAt(0).toUpperCase() + type.slice(1)}s`}
+              </button>
+            ))}
+          </div>
+
+          {/* Knowledge Items */}
+          <div className="space-y-8">
+            {filteredItems.map((item) => {
+              const styles = getTypeStyles(item.type);
+              
+              return (
+                <div 
+                  key={item.id}
+                  className={`bg-gray-800 rounded-xl overflow-hidden border border-gray-700 hover:${styles.border} transition-all duration-300 shadow-md`}
                 >
-                  <div className="md:flex">
-                    <div className="md:w-2/5 h-80 overflow-hidden">
+                  <div className="sm:flex">
+                    <div className="sm:w-1/4 h-48 sm:h-auto overflow-hidden relative">
                       <img
-                        src={pub.image}
-                        alt={pub.title}
-                        className="w-full h-full object-cover object-center"
+                        src={item.image}
+                        alt={item.title}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = `https://via.placeholder.com/400x400?text=${item.type}`;
+                        }}
                       />
+                      {/* Type Badge */}
+                      <div className="absolute top-4 left-4">
+                        <span className={`px-3 py-1 rounded-md text-sm font-medium ${styles.badge}`}>
+                          {item.type.charAt(0).toUpperCase() + item.type.slice(1)}
+                        </span>
+                      </div>
                     </div>
-                    <div className="md:w-3/5 p-12">
-                      <div className="flex justify-between items-start mb-6">
+
+                    <div className="sm:w-3/4 p-6">
+                      <div className="flex justify-between items-start mb-4">
                         <div>
-                          <h3 className="text-3xl font-bold text-white mb-3">{pub.title}</h3>
-                          <p className="text-blue-400 mb-4 text-lg">
-                            {pub.journal} • {pub.year}
+                          <h3 className="text-xl font-bold text-white">{item.title}</h3>
+                          <p className="text-gray-400 text-sm mt-1">
+                            {item.source} • {item.date}
+                            {item.readTime && ` • ${item.readTime}`}
                           </p>
                         </div>
                       </div>
 
-                      <p className="text-gray-300 mb-8 text-xl leading-relaxed">{pub.abstract}</p>
+                      <p className="text-gray-300 mb-4">{item.description}</p>
 
-                      <div className="flex flex-wrap gap-3 mb-8">
-                        {pub.tags.map(tag => (
+                      {/* Tags */}
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {item.tags.map(tag => (
                           <span
                             key={tag}
-                            className="px-5 py-2 bg-gray-700 rounded-full text-base font-medium text-blue-300"
+                            className={`px-2 py-1 rounded-md text-xs font-medium ${styles.tag}`}
                           >
                             {tag}
                           </span>
                         ))}
                       </div>
 
+                      {/* Link */}
                       <a
-                        href={pub.link}
+                        href={item.link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition-colors duration-300 font-medium text-lg"
+                        className="inline-flex items-center text-blue-400 hover:text-blue-300 transition-colors text-sm font-medium"
                       >
-                        Read Publication
-                        <ExternalLink size={20} className="ml-3" />
+                        {item.type === 'publication' ? 'Read Publication' : 
+                         item.type === 'blog' ? 'Read on Medium' : 'View Certificate'}
+                        <ExternalLink size={14} className="ml-2" />
                       </a>
                     </div>
                   </div>
-                </motion.div>
-              ))}
-            </motion.div>
-          )}
+                </div>
+              );
+            })}
+          </div>
 
-          {/* Blogs Tab */}
-          {activeTab === 'blogs' && (
-            <motion.div
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-              className="space-y-10"
+          {/* More Content Links */}
+          <div className="mt-16 flex justify-center">
+            <a
+              href="https://medium.com/@karamvirhapal"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg transition-all hover:opacity-90 font-medium text-sm"
             >
-              <div className="grid md:grid-cols-2 gap-8">
-                {blogs.map((blog) => (
-                  <motion.div
-                    key={blog.title}
-                    variants={itemVariants}
-                    className="bg-gray-800 rounded-3xl overflow-hidden shadow-xl border border-gray-700 hover:border-purple-500 transition-all duration-300 transform hover:scale-[1.03] h-full flex flex-col"
-                  >
-                    <div className="h-64 overflow-hidden">
-                      <img
-                        src={blog.image}
-                        alt={blog.title}
-                        className="w-full h-full object-cover object-center"
-                      />
-                    </div>
-                    <div className="p-10 flex-grow flex flex-col">
-                      <div className="mb-6">
-                        <div className="flex items-center justify-between text-base text-gray-400 mb-3">
-                          <span>{blog.platform}</span>
-                          <span>{blog.readTime}</span>
-                        </div>
-                        <h3 className="text-2xl font-bold text-white mb-4">{blog.title}</h3>
-                        <p className="text-gray-300 mb-6 text-lg leading-relaxed">{blog.snippet}</p>
-                      </div>
-
-                      <div className="flex flex-wrap gap-3 mb-6 mt-auto">
-                        {blog.tags.map(tag => (
-                          <span
-                            key={tag}
-                            className="px-4 py-2 bg-gray-700 rounded-full text-sm font-medium text-purple-300"
-                          >
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-
-                      <a
-                        href={blog.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center text-purple-400 hover:text-purple-300 transition-colors duration-300 font-medium text-lg mt-2"
-                      >
-                        Read on Medium
-                        <ChevronRight size={20} className="ml-2" />
-                      </a>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-
-              {/* View More Button */}
-              <div className="flex justify-center mt-20">
-                <a
-                  href="https://medium.com/@karamvirhapal"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center px-10 py-5 bg-purple-600 hover:bg-purple-700 text-white rounded-xl transition-all duration-300 font-medium text-xl group shadow-lg"
-                >
-                  View More Articles
-                  <ArrowRight size={22} className="ml-3 group-hover:translate-x-1 transition-transform duration-300" />
-                </a>
-              </div>
-            </motion.div>
-          )}
-
-          {/* Courses Tab */}
-          {activeTab === 'courses' && (
-            <motion.div
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-              className="space-y-8"
-            >
-              <div className="grid md:grid-cols-3 gap-8">
-                {courses.map((course) => (
-                  <motion.div
-                    key={course.title}
-                    variants={itemVariants}
-                    className="bg-gray-800 rounded-3xl overflow-hidden shadow-xl border border-gray-700 hover:border-green-500 transition-all duration-300 transform hover:scale-[1.03] h-full flex flex-col"
-                  >
-                    <div className="h-60 overflow-hidden relative">
-                      <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent opacity-60 z-10"></div>
-                      <img
-                        src={course.image}
-                        alt={course.title}
-                        className="w-full h-full object-cover object-center"
-                      />
-                      <div className="absolute bottom-0 left-0 p-6 z-20">
-                        <span className="px-5 py-2 bg-green-600/80 text-white rounded-lg text-base font-medium">
-                          {course.platform}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="p-10 flex-grow flex flex-col">
-                      <h3 className="text-2xl font-bold text-white mb-3">{course.title}</h3>
-                      {course.instructor && (
-                        <p className="text-gray-400 text-base mb-4">Instructor: {course.instructor}</p>
-                      )}
-                      <p className="text-gray-300 mb-6 text-lg leading-relaxed">{course.description}</p>
-
-                      <div className="flex flex-wrap gap-3 mb-6 mt-auto">
-                        {course.skills && course.skills.slice(0, 3).map(skill => (
-                          <span
-                            key={skill}
-                            className="px-4 py-2 bg-gray-700 rounded-full text-sm font-medium text-green-300"
-                          >
-                            {skill}
-                          </span>
-                        ))}
-                      </div>
-
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-400 text-lg">Completed: {course.completionDate}</span>
-                        <a
-                          href={course.link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center text-green-400 hover:text-green-300 transition-colors duration-300 font-medium text-lg"
-                        >
-                          View Certificate
-                          <ExternalLink size={18} className="ml-2" />
-                        </a>
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-          )}
+              View More Content
+              <ArrowRight size={16} className="ml-2" />
+            </a>
+          </div>
         </div>
       </div>
     </section>
   );
 };
 
-export default BloggingPublications;
+export default KnowledgeSharing;
