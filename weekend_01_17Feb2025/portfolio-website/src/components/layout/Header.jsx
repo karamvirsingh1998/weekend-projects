@@ -37,22 +37,28 @@ const Header = ({ activeSection, setActiveSection }) => {
       gradient: 'from-teal-600 to-green-600'
     },
     {
+      id: 'citations',
+      label: 'Citations',
+      icon: <LucideIcons.BookOpen size={20} />,
+      gradient: 'from-green-600 to-emerald-600'
+    },
+    {
       id: 'interests',
       label: 'Interests',
       icon: <LucideIcons.Heart size={20} />,
-      gradient: 'from-green-600 to-emerald-600'
+      gradient: 'from-emerald-600 to-yellow-600'
     },
     {
       id: 'ideas',
       label: 'Ideas',
       icon: <LucideIcons.Lightbulb size={20} />,
-      gradient: 'from-emerald-600 to-yellow-600'
+      gradient: 'from-yellow-600 to-orange-600'
     },
     {
       id: 'contact',
       label: 'Contact',
       icon: <LucideIcons.Mail size={20} />,
-      gradient: 'from-yellow-600 to-orange-600'
+      gradient: 'from-orange-600 to-red-600'
     }
   ];
 

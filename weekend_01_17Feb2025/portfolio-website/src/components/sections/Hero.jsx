@@ -371,6 +371,8 @@ const Hero = () => {
       icon: <LucideIcons.FileText size={30} />,
       color: "cyan-600",
       background: "bg-cyan-900/30",
+      highlight: true, // Enable highlight for citations
+      badge: "3", // Show citation count as a badge
     },
     {
       id: "ideas",
@@ -617,17 +619,50 @@ const Hero = () => {
               <motion.div
                 key={item.name}
                 initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.1 * index }}
+                animate={{ 
+                  opacity: 1, 
+                  y: 0,
+                  boxShadow: item.highlight ? ["0px 0px 0px rgba(6, 182, 212, 0)", "0px 0px 20px rgba(6, 182, 212, 0.7)", "0px 0px 0px rgba(6, 182, 212, 0)"] : "none",
+                }}
+                transition={{ 
+                  duration: 0.4, 
+                  delay: 0.1 * index,
+                  boxShadow: {
+                    repeat: Infinity,
+                    duration: 2,
+                  } 
+                }}
                 whileHover={{ scale: 1.03, y: -5 }}
                 onClick={() => handleNavClick(item.id)}
-                className="cursor-pointer"
+                className="cursor-pointer relative"
               >
+                {/* Badge for citation count */}
+                {item.badge && (
+                  <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-red-500 flex items-center justify-center z-10 animate-pulse">
+                    <span className="text-white text-xs font-bold">{item.badge}</span>
+                  </div>
+                )}
+                
                 <div
-                  className={`p-6 aspect-square rounded-lg ${item.background} border-2 border-${item.color} shadow-lg flex flex-col items-center justify-center gap-3`}
+                  className={`p-6 aspect-square rounded-lg ${item.background} border-2 ${item.highlight ? 'border-cyan-400' : `border-${item.color}`} ${item.highlight ? 'shadow-lg shadow-cyan-400/20' : ''} flex flex-col items-center justify-center gap-3 relative overflow-hidden`}
                 >
-                  <div className="text-white">{item.icon}</div>
-                  <div className="text-white text-lg font-medium">{item.name}</div>
+                  {/* Subtle animation for the highlighted item */}
+                  {item.highlight && (
+                    <motion.div 
+                      className="absolute inset-0 bg-gradient-to-r from-cyan-500/0 via-cyan-500/20 to-cyan-500/0"
+                      animate={{
+                        x: ['-100%', '100%'],
+                      }}
+                      transition={{
+                        repeat: Infinity,
+                        duration: 3,
+                        ease: "easeInOut",
+                      }}
+                    />
+                  )}
+                  
+                  <div className="text-white relative z-10">{item.icon}</div>
+                  <div className={`text-white text-lg font-medium relative z-10 ${item.highlight ? 'font-bold' : ''}`}>{item.name}</div>
                 </div>
               </motion.div>
             ))}
