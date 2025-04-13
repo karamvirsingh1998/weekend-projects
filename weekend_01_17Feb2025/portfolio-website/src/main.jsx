@@ -1,11 +1,10 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App.jsx'
-import './styles/globals.css'
+// src/main.jsx
+import React from 'react';
+import ReactDOM from 'react-dom/client';
 import { Analytics } from '@vercel/analytics/react';
-import { SpeedInsights } from '@vercel/speed-insights/next';
-
-
+import { SpeedInsights } from '@vercel/speed-insights/react';
+import App from './App';
+import './styles/globals.css'; // Assuming you have this file - update path if needed
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -13,4 +12,4 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <Analytics />
     <SpeedInsights />
   </React.StrictMode>
-)
+);
