@@ -16,11 +16,12 @@ body {
   -moz-osx-font-smoothing: grayscale;
   color: #ffffff;
   background-color: #0f172a;
+  overflow-y: auto;
 }
 
 /* Scrollbar styling */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
@@ -38,36 +39,35 @@ body {
 
 /* Fixes for section navigation */
 html {
-  scroll-padding-top: 120px; /* Generous padding to account for fixed header */
+  scroll-padding-top: 80px; /* Matches header height */
   scroll-behavior: smooth;
 }
 
-/* Ensure the main container has proper spacing */
-.min-h-screen {
-  padding-top: 80px; /* Consistent top padding for all sections except hero */
+/* Section containers with fixed height */
+.section-container {
+  height: calc(100vh - 80px); /* Subtract header height */
+  overflow-y: auto; /* Enable scrolling within the section */
+  margin-top: 80px; /* Account for fixed header */
+  position: relative;
 }
 
-/* Special handling for the hero section */
-#hero.min-h-screen {
-  padding-top: 0;
+/* For hero section (no top margin needed) */
+.hero-container {
+  height: 100vh;
+  overflow-y: auto;
+  position: relative;
 }
 
 /* Ensure proper height calculations for mobile */
 @media (max-width: 768px) {
+  .section-container {
+    height: calc(100vh - 60px); /* Smaller header on mobile */
+    margin-top: 60px;
+  }
+  
   html {
-    scroll-padding-top: 80px;
+    scroll-padding-top: 60px;
   }
-
-  .min-h-screen {
-    padding-top: 60px;
-  }
-}
-
-/* Override for any fullscreen sections to ensure they take up the full viewport */
-section.min-h-screen {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
 }
 
 /* Additional helper classes */
@@ -107,4 +107,61 @@ section.min-h-screen {
     transform: translateY(0);
     opacity: 1;
   }
+}
+
+/* Content containers */
+.content-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* Section transitions */
+.section-transition {
+  transition: opacity 0.3s ease-in-out;
+}
+/* Main container styles */
+.auto-fit-section {
+  position: relative;
+  min-height: 0; /* Remove minimum height */
+  height: auto; /* Let height adjust to content */
+  max-height: calc(100vh - 80px); /* Ensure it doesn't exceed viewport minus header */
+  overflow: auto; /* Add scrollbar only if needed */
+  padding: 20px;
+  margin-top: 80px; /* Account for header */
+}
+
+/* Hero section doesn't need top margin */
+#hero.auto-fit-section {
+  margin-top: 0;
+}
+
+/* Make text and elements resize better */
+@media (max-height: 800px) {
+  .auto-fit-section h2 {
+    font-size: 2rem !important; /* Smaller headings on short screens */
+    margin-bottom: 0.5rem !important;
+  }
+  
+  .auto-fit-section p {
+    font-size: 0.9rem !important; /* Smaller text on short screens */
+    margin-bottom: 0.5rem !important;
+  }
+  
+  .auto-fit-section .card, 
+  .auto-fit-section .timeline-item,
+  .auto-fit-section .stats-grid {
+    padding: 10px !important;
+    margin-bottom: 10px !important;
+  }
+  @keyframes fade {
+    0% { opacity: 0; transform: scale(0.98); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+  
+  .animate-fade {
+    animation: fade 0.6s ease-in-out;
+  }
+  
 }

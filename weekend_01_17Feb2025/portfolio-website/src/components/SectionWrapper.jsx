@@ -11,9 +11,13 @@ const SectionWrapper = ({ children, id, isHero = false }) => {
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-100px" }}
-      className={`min-h-screen relative ${isHero ? 'bg-transparent' : 'bg-gray-900'}`}
-      // Add padding to all non-hero sections
-      style={{ paddingTop: isHero ? 0 : "100px" }}
+      // Keep relative positioning but remove min-height constraint
+      className={`relative ${isHero ? 'bg-transparent' : 'bg-gray-900'}`}
+      // Reduced padding for better spacing
+      style={{ 
+        paddingTop: isHero ? 0 : "80px",
+        paddingBottom: "2rem"
+      }}
     >
       {/* Decorative background elements - only shown for Hero section */}
       {isHero && (
@@ -36,7 +40,7 @@ const SectionWrapper = ({ children, id, isHero = false }) => {
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-100px" }}
-        className="relative z-10"
+        className="relative z-10 w-full"
       >
         {children}
       </motion.div>

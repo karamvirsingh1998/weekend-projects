@@ -103,37 +103,140 @@ const App = () => {
     }
   }, [isLoading]);
 
-  // Mobile screen component
-  const MobileWarning = () => {
-    // Function to attempt to set desktop viewport and force reload
-    const openDesktopMode = () => {
-      // Set a flag in session storage to remember the desktop preference
-      sessionStorage.setItem('forceDesktopMode', 'true');
+// Enhanced Mobile Warning Component with animated citation quotes in background
+const MobileWarning = () => {
+  // Function to set desktop viewport and force reload
+  const openDesktopMode = () => {
+    sessionStorage.setItem('forceDesktopMode', 'true');
+    window.location.href = window.location.href + (window.location.href.includes('?') ? '&' : '?') + 'desktop=1';
+  };
+  
+  // Function to navigate directly to citations section
+  const navigateToCitations = () => {
+    sessionStorage.setItem('forceDesktopMode', 'true');
+    window.location.href = window.location.href + (window.location.href.includes('?') ? '&' : '?') + 'desktop=1#citations';
+  };
+  
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden">
+      {/* Dark overlay with reduced opacity */}
+      <div className="absolute inset-0 bg-gray-900/70"></div>
       
-      // Redirect to the same page with a query parameter to force reload
-      window.location.href = window.location.href + (window.location.href.includes('?') ? '&' : '?') + 'desktop=1';
-    };
-    
-    return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 text-white p-6">
-        <div className="max-w-md text-center bg-gray-800 p-8 rounded-xl shadow-lg border border-blue-600">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-blue-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-          </svg>
-          <h2 className="text-2xl font-bold mb-4 text-blue-400">Desktop View Required</h2>
-          <p className="mb-6">This portfolio is optimized for desktop viewing. Please click the button below to continue:</p>
-          
-          <button 
-            className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors font-bold text-lg"
-            onClick={openDesktopMode}
-          >
-            Open Desktop Version
-          </button>
+      {/* Animated background quotes */}
+      <div className="absolute inset-0 overflow-hidden">
+        {/* Gradient overlays for better readability */}
+        <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-gray-900 to-transparent z-10"></div>
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-gray-900 to-transparent z-10"></div>
+        <div className="absolute inset-0 bg-gray-900/30 backdrop-blur-sm z-0"></div>
+        
+        {/* First quote - slow animation from right to left */}
+        <div className="absolute top-1/4 -right-full w-full max-w-md animate-quote-1">
+          <div className="p-4 bg-blue-900/20 border-l-4 border-blue-500 rounded">
+            <p className="text-lg text-blue-200 italic">"Karamvir demonstrated exceptional technical expertise and a talent for solving complex problems."</p>
+            <p className="text-sm text-blue-300 mt-2">— Pavitar Singh, Founder and CEO (UnifyApps)</p>
+          </div>
+        </div>
+        
+        {/* Second quote - slow animation from left to right */}
+        <div className="absolute top-1/2 -left-full w-full max-w-md animate-quote-2">
+          <div className="p-4 bg-purple-900/20 border-l-4 border-purple-500 rounded">
+            <p className="text-lg text-purple-200 italic">"He is not just a participant in projects but a driving force behind them."</p>
+            <p className="text-sm text-purple-300 mt-2">— Yogin Patel, Head of AI (Sprinklr)</p>
+          </div>
+        </div>
+        
+        {/* Third quote - slow animation from bottom to top */}
+        <div className="absolute -bottom-full left-1/4 w-full max-w-md animate-quote-3">
+          <div className="p-4 bg-indigo-900/20 border-l-4 border-indigo-500 rounded">
+            <p className="text-lg text-indigo-200 italic">"Karamvir is an exceptional talent. He has always surprised me and surpassed my expectations."</p>
+            <p className="text-sm text-indigo-300 mt-2">— Sachin Bhardwaj, Head of AI (UnifyApps)</p>
+          </div>
+        </div>
+        
+        {/* Fourth quote - slow animation from top to bottom */}
+        <div className="absolute -top-full right-1/4 w-full max-w-md animate-quote-4">
+          <div className="p-4 bg-cyan-900/20 border-l-4 border-cyan-500 rounded">
+            <p className="text-lg text-cyan-200 italic">"His dedication, collaborative spirit, and proactive approach made him a critical part of our success."</p>
+            <p className="text-sm text-cyan-300 mt-2">— Elisabetta Carta, Senior Product Manager AI (Sprinklr)</p>
+          </div>
         </div>
       </div>
-    );
-  };
+      
+      {/* Foreground CTA card */}
+      <div className="relative z-20 w-11/12 max-w-xs mx-auto bg-gray-900/80 backdrop-blur-xl rounded-xl border border-blue-500/30 shadow-xl">
+        {/* Icon */}
+        <div className="flex justify-center mt-4">
+          <div className="w-16 h-16 flex items-center justify-center bg-gradient-to-br from-blue-600 to-purple-600 rounded-full shadow-md">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+          </div>
+        </div>
+        
+        <div className="p-5 pt-2 text-center">
+          <h2 className="text-xl font-bold mb-1 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">Unlock Full Experience</h2>
+          
+          <p className="text-sm text-blue-200 mb-1">See Karamvir's Professional Journey</p>
+          <p className="text-xs text-gray-300 mb-3">View endorsements from industry leaders</p>
+          
+          {/* CTA button */}
+          <button 
+            className="w-full mt-1 px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 rounded-lg font-bold text-sm text-white shadow-md transition-all duration-300"
+            onClick={openDesktopMode}
+          >
+            <span className="flex items-center justify-center gap-1">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+              View on Desktop
+            </span>
+          </button>
+          
+          <div className="h-4"></div> {/* Bottom spacing */}
+        </div>
+      </div>
 
+      {/* Custom animation keyframes */}
+      <style jsx>{`
+        @keyframes quote1 {
+          0%, 100% { transform: translateX(100%); opacity: 0; }
+          25%, 75% { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes quote2 {
+          0%, 25%, 100% { transform: translateX(-100%); opacity: 0; }
+          50%, 75% { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes quote3 {
+          0%, 50%, 100% { transform: translateY(100%); opacity: 0; }
+          75%, 85% { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes quote4 {
+          0%, 75%, 100% { transform: translateY(-100%); opacity: 0; }
+          85%, 95% { transform: translateY(0); opacity: 1; }
+        }
+        
+        .animate-quote-1 {
+          animation: quote1 20s infinite ease-in-out;
+        }
+        
+        .animate-quote-2 {
+          animation: quote2 20s infinite ease-in-out;
+        }
+        
+        .animate-quote-3 {
+          animation: quote3 20s infinite ease-in-out;
+        }
+        
+        .animate-quote-4 {
+          animation: quote4 20s infinite ease-in-out;
+        }
+      `}</style>
+    </div>
+  );
+};
   return (
     <>
       {isLoading ? (
@@ -193,39 +296,39 @@ const App = () => {
             </header>
 
             {/* Content Sections with fixed top padding */}
-            <div id="hero" className="pt-0 min-h-screen">
+            <div id="hero">
               <Hero navigateToSection={navigateToSection} />
             </div>
 
-            <div id="about" className="pt-20 min-h-screen">
+            <div id="about">
               <About navigateToSection={navigateToSection} />
             </div>
 
-            <div id="skills" className="pt-20 min-h-screen">
+            <div id="skills">
               <Skills navigateToSection={navigateToSection} />
             </div>
 
-            <div id="citations" className="pt-20 min-h-screen">
+            <div id="citations" >
               <Citations navigateToSection={navigateToSection} />
             </div>
 
-            <div id="projects" className="pt-20 min-h-screen">
+            <div id="projects">
               <Projects navigateToSection={navigateToSection} />
             </div>
 
-            <div id="research" className="pt-20 min-h-screen">
+            <div id="research">
               <ResearchPapers navigateToSection={navigateToSection} />
             </div>
 
-            <div id="ideas" className="pt-20 min-h-screen">
+            <div id="ideas">
               <Ideas navigateToSection={navigateToSection} />
             </div>
 
-            <div id="interests" className="pt-20 min-h-screen">
+            <div id="interests">
               <Interests navigateToSection={navigateToSection} />
             </div>
 
-            <div id="contact" className="pt-20 min-h-screen">
+            <div id="contact">
               <Contact navigateToSection={navigateToSection} />
             </div>
 
