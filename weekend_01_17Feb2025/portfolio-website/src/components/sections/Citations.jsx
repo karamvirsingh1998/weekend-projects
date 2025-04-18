@@ -21,34 +21,37 @@ const Citations = () => {
     }
   };
 
-  // Enhanced citation data with additional metadata
+  // Enhanced citation data with additional metadata and alternative images
   const citations = [
     {
       id: 1,
       image: '/citations/pavitar.png',
+      altImage: '/citations/alt/pavitar-alt.png', // Alternative image for icon
       name: 'Pavitar Singh',
       role: 'Founder and CEO (Unifyapps) , Ex-CTO (Sprinklr)',
       linkedIn: 'http://linkedin.com/in/pavitar/',
       company: 'Unifyapps',
       previousCompany: 'Sprinklr',
       tags: ['leadership', 'ai-strategy', 'engineering'],
-      highlightQuote: "I had worked with Karamvir during his tenure as Lead AI Engineer at UnifyApps. While I didn’t manage Karamvir directly, I witnessed how he played a key role in driving forward our AI initiatives and turning strategic ideas into tangible results. His ability to understand and execute the company's broader vision was invaluable.Karamvir demonstrated exceptional technical expertise and a talent for solving complex problems. He was instrumental in developing innovative AI solutions that aligned seamlessly with our business goals. His dedication, collaborative spirit, and proactive approach made him a critical part of our success, helping to push the boundaries of what we could achieve with AI.I have no doubt that Karamvir will continue to thrive and deliver impactful results in any future endeavor. He would be a tremendous asset to any team",
+      highlightQuote: "I had worked with Karamvir during his tenure as Lead AI Engineer at UnifyApps. While I didn't manage Karamvir directly, I witnessed how he played a key role in driving forward our AI initiatives and turning strategic ideas into tangible results. His ability to understand and execute the company's broader vision was invaluable.Karamvir demonstrated exceptional technical expertise and a talent for solving complex problems. He was instrumental in developing innovative AI solutions that aligned seamlessly with our business goals. His dedication, collaborative spirit, and proactive approach made him a critical part of our success, helping to push the boundaries of what we could achieve with AI.I have no doubt that Karamvir will continue to thrive and deliver impactful results in any future endeavor. He would be a tremendous asset to any team",
       relationship: "CEO"
     },
     {
       id: 2,
       image: '/citations/yogin.png',
+      altImage: '/citations/alt/yogin-alt.png',
       name: 'Yogin Patel',
       role: 'Head of AI (Sprinklr)',
       linkedIn: 'https://www.linkedin.com/in/yogin-patel-4ba55321/',
       company: 'Sprinklr',
       tags: ['ai-research', 'leadership', 'nlp'],
-      highlightQuote: "I am delighted to recommend Karamvir, a standout member of our team whose leadership and ownership are evident in every facet of our operations. Karamvir's commitment to excellence is showcased in his pivotal role in developing Voice AI models, a key project that has significantly advanced our technological capabilities. His ability to lead this complex initiative demonstrates his deep technical expertise.Karamvir is inherently involved in all our projects, directly or indirectly. Either influencing outcomes with his leadership and expertise, or his approachability further amplifies his impact, as team members from various projects consistently seek his advice, trusting his guidance and benefiting from his insights. This unique blend of involvement and influence highlights his integral role in our success.Any organization would benefit immensely from Karamvir’s dedication and leadership. He is not just a participant in projects but a driving force behind them, ensuring that each one not only reaches but surpasses our goals. Karamvir’s contributions have not only propelled our projects to new heights but have also set a standard of excellence within our team.",
+      highlightQuote: "I am delighted to recommend Karamvir, a standout member of our team whose leadership and ownership are evident in every facet of our operations. Karamvir's commitment to excellence is showcased in his pivotal role in developing Voice AI models, a key project that has significantly advanced our technological capabilities. His ability to lead this complex initiative demonstrates his deep technical expertise.Karamvir is inherently involved in all our projects, directly or indirectly. Either influencing outcomes with his leadership and expertise, or his approachability further amplifies his impact, as team members from various projects consistently seek his advice, trusting his guidance and benefiting from his insights. This unique blend of involvement and influence highlights his integral role in our success.Any organization would benefit immensely from Karamvir's dedication and leadership. He is not just a participant in projects but a driving force behind them, ensuring that each one not only reaches but surpasses our goals. Karamvir's contributions have not only propelled our projects to new heights but have also set a standard of excellence within our team.",
       relationship: "Manager"
     },
     {
       id: 3,
       image: '/citations/sachin.png',
+      altImage: '/citations/alt/sachin-alt.png',
       name: 'Sachin Bhardwaj',
       role: 'Head of AI (UnifyApps)',
       linkedIn: 'https://www.linkedin.com/in/sachin-bharadwaj-3518881/',
@@ -60,6 +63,7 @@ const Citations = () => {
     {
       id: 4,
       image: '/citations/aayush.png',
+      altImage: '/citations/alt/aayush-alt.png',
       name: 'Aayush Kubba',
       role: 'Senior Director Data Science (Sprinklr)',
       linkedIn: 'https://www.linkedin.com/in/aayushkubba/',
@@ -71,6 +75,7 @@ const Citations = () => {
     {
       id: 5,
       image: '/citations/eli.png',
+      altImage: '/citations/alt/eli-alt.png',
       name: 'Elisabetta Carta',
       role: 'Senior Product Manager AI (Sprinklr)',
       linkedIn: 'https://www.linkedin.com/in/elisabetta-carta/',
@@ -82,17 +87,19 @@ const Citations = () => {
     {
       id: 6,
       image: '/citations/navaneshwar.png',
+      altImage: '/citations/alt/navaneshwar-alt.png',
       name: 'Navaneshwar Reddy',
       role: 'Director of Engineering (UnifyApps)',
       linkedIn: 'https://www.linkedin.com/in/navaneshwar-reddy/',
       company: 'UnifyApps',
       tags: ['engineering', 'architecture', 'leadership'],
-      highlightQuote: "I’ve had the pleasure of working closely with karamvir and I can confidently say that he is an exceptional AI Engineer. He has a solid understanding of AI concepts and consistently demonstrates an eagerness to explore new ideas and technologies. What sets him apart is his problem-solving mindset. No challenge is too big; he approaches every task with a determined and analytical attitude, often uncovering creative and efficient solutions. Beyond technical skills, he is hardworking, curious, and always willing to learn.I have no doubt that he will continue to excel in any role that demands innovation, dedication, and expertise in AI.",
+      highlightQuote: "I've had the pleasure of working closely with karamvir and I can confidently say that he is an exceptional AI Engineer. He has a solid understanding of AI concepts and consistently demonstrates an eagerness to explore new ideas and technologies. What sets him apart is his problem-solving mindset. No challenge is too big; he approaches every task with a determined and analytical attitude, often uncovering creative and efficient solutions. Beyond technical skills, he is hardworking, curious, and always willing to learn.I have no doubt that he will continue to excel in any role that demands innovation, dedication, and expertise in AI.",
       relationship: "Colleague"
     },
     {
       id: 7,
-      image: '/citations/krit.png',
+      image: '/citations/akshat.png',
+      altImage: '/citations/alt/akshat-alt.png',
       name: 'Akshat Goyal',
       role: 'Director of Product Management (Sprinklr)',
       linkedIn: 'https://www.linkedin.com/in/goyalakshat28/',
@@ -103,7 +110,8 @@ const Citations = () => {
     },
     {
       id: 8,
-      image: '/citations/akshat.png',
+      image: '/citations/krit.png',
+      altImage: '/citations/alt/krit-alt.png',
       name: 'Krit Patel',
       role: 'Associate Director of Engineering (Sprinklr)',
       linkedIn: 'https://www.linkedin.com/in/krit-patel-061731171/',
@@ -115,6 +123,7 @@ const Citations = () => {
     {
       id: 9,
       image: '/citations/manoj.png',
+      altImage: '/citations/alt/manoj-alt.png',
       name: 'Manoj Kumar',
       role: 'Head India Operations (Kryptoblocks)',
       linkedIn: 'https://www.linkedin.com/in/manoj-kumar-kayastha/',
@@ -134,9 +143,12 @@ const Citations = () => {
     : citations.filter(citation => citation.tags.includes(filterTag));
 
   // Functions for modal
-  const openImageModal = (image, name) => {
-    setSelectedImage({ url: image, name: name });
+  const openImageModal = (citation) => {
+    setSelectedImage(citation);
     document.body.style.overflow = 'hidden'; // Prevent background scrolling
+    
+    // Also set this citation as the active testimonial to show its quote
+    handleSelectTestimonial(citation);
   };
 
   const closeImageModal = () => {
@@ -156,12 +168,9 @@ const Citations = () => {
     
     setIsQuoteAnimating(true);
     
-    // If already selected, deselect
+    // If already selected, don't deselect - just keep it
     if (activeTestimonial && activeTestimonial.id === citation.id) {
-      setActiveTestimonial(null);
-      setTimeout(() => {
-        setIsQuoteAnimating(false);
-      }, 500);
+      setIsQuoteAnimating(false);
       return;
     }
     
@@ -172,14 +181,14 @@ const Citations = () => {
         setActiveTestimonial(citation);
         setTimeout(() => {
           setIsQuoteAnimating(false);
-        }, 500);
-      }, 500);
+        }, 200);
+      }, 100);
     } else {
       // No current quote, just animate in
       setActiveTestimonial(citation);
       setTimeout(() => {
         setIsQuoteAnimating(false);
-      }, 500);
+      }, 100);
     }
     
     // Scroll quote into view on mobile
@@ -190,21 +199,25 @@ const Citations = () => {
     }
   };
 
-  // Auto cycle through testimonials
+  // Auto cycle through testimonials - enhanced to work without user intervention
   useEffect(() => {
-    if (!activeTestimonial && filteredCitations.length > 0 && !isQuoteAnimating) {
+    // Start auto-cycling immediately when component mounts
+    if (!activeTestimonial && filteredCitations.length > 0) {
       const timer = setTimeout(() => {
         handleSelectTestimonial(filteredCitations[0]);
-      }, 1000);
+      }, 100); // Start first one quickly
       return () => clearTimeout(timer);
     }
     
-    if (activeTestimonial && !isQuoteAnimating) {
+    // Continue cycling through testimonials
+    if (!isQuoteAnimating && filteredCitations.length > 1) {
       const timer = setTimeout(() => {
-        const currentIndex = filteredCitations.findIndex(c => c.id === activeTestimonial.id);
+        const currentIndex = activeTestimonial 
+          ? filteredCitations.findIndex(c => c.id === activeTestimonial.id)
+          : -1;
         const nextIndex = (currentIndex + 1) % filteredCitations.length;
         handleSelectTestimonial(filteredCitations[nextIndex]);
-      }, 8000); // Change testimonial every 8 seconds
+      },5000); // Change testimonial every 8 seconds
       return () => clearTimeout(timer);
     }
   }, [activeTestimonial, filteredCitations, isQuoteAnimating]);
@@ -267,7 +280,7 @@ const Citations = () => {
                     <div className="citation-details">
                       <div className="avatar-container">
                         <img 
-                          src={activeTestimonial.image} 
+                          src={activeTestimonial.altImage} 
                           alt={activeTestimonial.name}
                           className="avatar-image"
                           onError={(e) => {
@@ -313,7 +326,7 @@ const Citations = () => {
                 {!activeTestimonial && (
                   <div className="empty-quote">
                     <MessageCircle size={40} className="text-gray-600 mb-3" />
-                    <p>Select a testimonial to view their endorsement</p>
+                    <p>Loading testimonials...</p>
                   </div>
                 )}
               </div>
@@ -327,7 +340,7 @@ const Citations = () => {
                 <div 
                   key={citation.id}
                   className={`testimonial-card ${activeTestimonial && activeTestimonial.id === citation.id ? 'active' : ''}`}
-                  onClick={() => handleSelectTestimonial(citation)}
+                  onClick={() => openImageModal(citation)}
                 >
                   <div className="image-container">
                     <img
@@ -359,7 +372,7 @@ const Citations = () => {
                         className="view-full-btn"
                         onClick={(e) => {
                           e.stopPropagation();
-                          openImageModal(citation.image, citation.name);
+                          openImageModal(citation);
                         }}
                       >
                         <span className="sr-only">View Full Testimonial</span>
@@ -381,13 +394,22 @@ const Citations = () => {
                     </div>
                   </div>
                   
-                  {/* Relationship indicator */}
+                  {/* Relationship indicator - UPDATED TO USE ALTERNATIVE IMAGES */}
                   <div className="relationship-indicator">
-                    {citation.relationship === "Manager" ? (
-                      <span title="Manager">M</span>
-                    ) : (
-                      <span title="Colleague">C</span>
-                    )}
+                    <img 
+                      src={citation.altImage} 
+                      alt={`${citation.name} icon`} 
+                      className="relationship-icon"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        // Fallback to default indicators if alt image fails to load
+                        if (citation.relationship === "Manager") {
+                          e.target.outerHTML = '<span title="Manager">M</span>';
+                        } else {
+                          e.target.outerHTML = '<span title="Colleague">C</span>';
+                        }
+                      }}
+                    />
                   </div>
                 </div>
               ))}
@@ -423,7 +445,7 @@ const Citations = () => {
         </div>
       </div>
 
-      {/* Enhanced Image Modal with animations */}
+      {/* Enhanced Image Modal with quote and auto-expansion functionality */}
       {selectedImage && (
         <div
           id="imageModal"
@@ -440,17 +462,60 @@ const Citations = () => {
               <X size={24} />
             </button>
 
-            {/* Modal image */}
-            <div className="max-h-[90vh] overflow-auto p-2">
-              <img
-                src={selectedImage.url}
-                alt={`Testimonial from ${selectedImage.name}`}
-                className="w-full h-auto"
-                onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src = 'https://via.placeholder.com/800x600?text=Unable+to+Load+Image';
-                }}
-              />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
+              {/* Modal image */}
+              <div className="modal-image-container">
+                <img
+                  src={selectedImage.image}
+                  alt={`Testimonial from ${selectedImage.name}`}
+                  className="w-full h-auto"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = 'https://via.placeholder.com/800x600?text=Unable+to+Load+Image';
+                  }}
+                />
+              </div>
+              
+              {/* Modal quote */}
+              <div className="modal-quote-container">
+                <div className="modal-quote-content">
+                  <h3 className="modal-quote-name">{selectedImage.name}</h3>
+                  <p className="modal-quote-role">{selectedImage.role}</p>
+                  
+                  <div className="modal-quote-company">
+                    <span className="company-badge">{selectedImage.company}</span>
+                    {selectedImage.previousCompany && (
+                      <span className="prev-company-badge">Ex-{selectedImage.previousCompany}</span>
+                    )}
+                  </div>
+                  
+                  <div className="modal-quote-text">
+                    <div className="quote-mark top-mark">❝</div>
+                    <p>{selectedImage.highlightQuote}</p>
+                    <div className="quote-mark bottom-mark">❞</div>
+                  </div>
+                  
+                  <div className="modal-quote-footer">
+                    <a
+                      href={selectedImage.linkedIn}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="modal-linkedin-link"
+                    >
+                      <Linkedin size={18} className="mr-2" />
+                      <span>View LinkedIn Profile</span>
+                    </a>
+                    
+                    <div className="modal-tags">
+                      {selectedImage.tags.map(tag => (
+                        <span key={tag} className="modal-tag">
+                          {tag.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -787,20 +852,24 @@ const Citations = () => {
           background: rgba(10, 102, 194, 0.4);
         }
         
-        /* Relationship indicator */
+        /* Relationship indicator - UPDATED for alternative images */
         .relationship-indicator {
           position: absolute;
           top: 10px;
           right: 10px;
-          width: 24px;
-          height: 24px;
+          width: 32px;
+          height: 32px;
           border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 0.75rem;
-          font-weight: 600;
+          overflow: hidden;
+          border: 2px solid rgba(255, 255, 255, 0.5);
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
           z-index: 10;
+        }
+        
+        .relationship-icon {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
         }
         
         .relationship-indicator span[title="Manager"] {
@@ -873,13 +942,121 @@ const Citations = () => {
           letter-spacing: 1px;
         }
         
-        /* Modal animations */
+        /* Enhanced Modal Styling */
         .modal-container {
           animation: fadeIn 0.3s ease;
         }
         
         .modal-content {
           animation: scaleIn 0.3s ease;
+          max-height: 90vh;
+          display: flex;
+          flex-direction: column;
+        }
+        
+        .modal-image-container {
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+          background: rgba(17, 24, 39, 0.8);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 1rem;
+        }
+        
+        .modal-image-container img {
+          max-width: 100%;
+          max-height: 70vh;
+          object-fit: contain;
+          box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .modal-quote-container {
+          background: rgba(17, 24, 39, 0.95);
+          padding: 2rem;
+          overflow-y: auto;
+          max-height: 70vh;
+        }
+        
+        .modal-quote-content {
+          position: relative;
+        }
+        
+        .modal-quote-name {
+          font-size: 1.5rem;
+          font-weight: 700;
+          color: white;
+          margin-bottom: 0.5rem;
+        }
+        
+        .modal-quote-role {
+          font-size: 1rem;
+          color: #94a3b8;
+          margin-bottom: 1rem;
+        }
+        
+        .modal-quote-company {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.5rem;
+          margin-bottom: 1.5rem;
+        }
+        
+        .modal-quote-text {
+          position: relative;
+          font-size: 1.1rem;
+          line-height: 1.8;
+          color: white;
+          background: rgba(30, 41, 59, 0.5);
+          border-radius: 12px;
+          padding: 2rem;
+          margin: 2rem 0;
+          font-style: italic;
+          max-height: 300px;
+          overflow-y: auto;
+        }
+        
+        .modal-quote-footer {
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+          margin-top: 1rem;
+          border-top: 1px solid rgba(255, 255, 255, 0.1);
+          padding-top: 1.5rem;
+        }
+        
+        .modal-linkedin-link {
+          display: inline-flex;
+          align-items: center;
+          color: #60a5fa;
+          font-size: 0.9rem;
+          padding: 0.5rem 1rem;
+          border-radius: 8px;
+          background: rgba(59, 130, 246, 0.1);
+          transition: all 0.3s ease;
+          width: fit-content;
+        }
+        
+        .modal-linkedin-link:hover {
+          background: rgba(59, 130, 246, 0.2);
+          color: #93c5fd;
+        }
+        
+        .modal-tags {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.5rem;
+        }
+        
+        .modal-tag {
+          padding: 0.25rem 0.75rem;
+          background: rgba(139, 92, 246, 0.1);
+          border: 1px solid rgba(139, 92, 246, 0.3);
+          border-radius: 20px;
+          font-size: 0.75rem;
+          color: #c4b5fd;
         }
         
         @keyframes fadeIn {
@@ -924,8 +1101,20 @@ const Citations = () => {
             margin-right: 0;
             margin-bottom: 1rem;
           }
+          
+          .modal-content {
+            grid-template-columns: 1fr;
+          }
+          
+          .modal-image-container {
+            max-height: 40vh;
+          }
+          
+          .modal-quote-container {
+            max-height: 50vh;
+          }
         }
-      `}</style>
+          `}</style>
     </section>
   );
 };

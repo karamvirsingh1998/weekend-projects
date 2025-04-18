@@ -10,13 +10,13 @@ const Footer = () => {
             © {new Date().getFullYear()} Karamvir Singh. All rights reserved.
           </div>
           <div className="flex space-x-6">
-            <a href="#" className="text-gray-400 hover:text-white">
+            <a href="https://github.com/karamvirsingh1998" className="text-gray-400 hover:text-white">
               <LucideIcons.Github size={20} />
             </a>
-            <a href="#" className="text-gray-400 hover:text-white">
+            <a href="https://www.linkedin.com/in/karamvir-singh-842838177/" className="text-gray-400 hover:text-white">
               <LucideIcons.Linkedin size={20} />
             </a>
-            <a href="#" className="text-gray-400 hover:text-white">
+            <a href="https://x.com/its_karamvir" className="text-gray-400 hover:text-white">
               <LucideIcons.Twitter size={20} />
             </a>
           </div>
