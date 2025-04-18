@@ -30,7 +30,7 @@ const Citations = () => {
       name: 'Pavitar Singh',
       role: 'Founder and CEO (Unifyapps) , Ex-CTO (Sprinklr)',
       linkedIn: 'http://linkedin.com/in/pavitar/',
-      company: 'Unifyapps',
+      company: 'UnifyApps',
       previousCompany: 'Sprinklr',
       tags: ['leadership', 'ai-strategy', 'engineering'],
       highlightQuote: "I had worked with Karamvir during his tenure as Lead AI Engineer at UnifyApps. While I didn't manage Karamvir directly, I witnessed how he played a key role in driving forward our AI initiatives and turning strategic ideas into tangible results. His ability to understand and execute the company's broader vision was invaluable.Karamvir demonstrated exceptional technical expertise and a talent for solving complex problems. He was instrumental in developing innovative AI solutions that aligned seamlessly with our business goals. His dedication, collaborative spirit, and proactive approach made him a critical part of our success, helping to push the boundaries of what we could achieve with AI.I have no doubt that Karamvir will continue to thrive and deliver impactful results in any future endeavor. He would be a tremendous asset to any team",
