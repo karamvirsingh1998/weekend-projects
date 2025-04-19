@@ -327,12 +327,44 @@ const Hero = () => {
   // State for dynamic traits with simplified animation
   const [currentTraitIndex, setCurrentTraitIndex] = useState(0);
   const traits = [
+
     "Building AI that solves real problems",
-    "Voice technology specialist",
-    "LLM fine-tuning expert",
-    "4 years of AI/ML experience",
+    "4 years of AI - ML - GEN AI experience",
+    "Building MultiRouter Agents",
     "Published AI researcher",
     "AI Mentorship via Topmate"
+  ];
+  const testimonials = [
+    {
+      text: "Karamvir demonstrated exceptional technical expertise and a talent for solving complex problems",
+      author: "Pavitar Singh",
+      role: "CEO (UnifyApps)"
+    },
+    {
+      text: "He is not just a participant in projects but a driving force behind them.",
+      author: "Yogin Patel",
+      role: "Head of AI (Sprinklr)"
+    },
+    {
+      text: "Karamvir is an exceptional talent. He has always surprised me",
+      author: "Sachin Bhardwaj",
+      role: "Head of AI (UnifyApps)"
+    },
+    {
+      text: "His dedication made him a critical part of our success.",
+      author: "Elisabetta Carta",
+      role: "PM (Sprinklr)"
+    },
+    {
+      text: "One thing I adore about him was his ability to quickly experiment and iterate.",
+      author: "Aayush Kubba",
+      role: "Director (Voice AI), Sprinklr"
+    },
+    {
+      text: "No challenge is too big; he approaches every task with a determined attitude.",
+      author: "Navaneshwar Reddy", 
+      role: "Director (UnifyApps)"
+    }
   ];
 
   // Simplified navigation with fewer animations
@@ -396,6 +428,28 @@ const Hero = () => {
       background: "bg-indigo-900/30",
     },
   ];
+  const shuffleArray = (array) => {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+  };
+  
+  // Combined array with shuffled items
+  const combinedItems = shuffleArray([
+    ...traits.map(trait => ({ type: 'trait', content: trait })),
+    ...testimonials.map(testimonial => ({ type: 'testimonial', content: testimonial }))
+  ]);
+
+  // Rotate through traits and testimonials
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTraitIndex((prev) => (prev + 1) % combinedItems.length);
+    }, 6000); // Increased display time to 6 seconds for better readability
+    return () => clearInterval(interval);
+  }, [combinedItems.length]);
    
   // Rotate through traits
   useEffect(() => {
@@ -494,18 +548,49 @@ const Hero = () => {
             </motion.p>
 
             {/* Dynamic trait with simplified animation */}
-            <div className="h-8 mt-3 mb-4">
-              <AnimatePresence mode="wait">
-                <motion.p
-                  key={currentTraitIndex}
-                  initial={{ opacity: 0, y: 5 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -5 }}
-                  transition={{ duration: 0.3 }}
-                  className="text-lg text-gray-300 italic"
-                >
-                  {traits[currentTraitIndex]}
-                </motion.p>
+            <div className="h-24 mt-3 mb-4">
+            <AnimatePresence mode="wait">
+                {combinedItems[currentTraitIndex].type === 'trait' ? (
+                  <motion.div
+                    key={`trait-${currentTraitIndex}`}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.5 }}
+                    className="bg-gradient-to-r from-blue-900/40 to-purple-900/40 p-3 rounded-lg border border-blue-500/30 shadow-lg max-w-md mx-auto flex items-center justify-center h-full"
+                  >
+                    <p className="text-lg text-gray-300 italic">
+                      {combinedItems[currentTraitIndex].content}
+                    </p>
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key={`testimonial-${currentTraitIndex}`}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.5 }}
+                    className="bg-gradient-to-r from-blue-900/40 to-purple-900/40 p-3 rounded-lg border border-blue-500/30 shadow-lg max-w-md mx-auto"
+                  >
+                    <motion.p 
+                      className="text-sm text-gray-200"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.2, duration: 0.3 }}
+                    >
+                      "{combinedItems[currentTraitIndex].content.text}"
+                    </motion.p>
+                    <motion.div 
+                      className="mt-2 text-right"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.4, duration: 0.3 }}
+                    >
+                      <p className="text-xs font-bold text-blue-400">{combinedItems[currentTraitIndex].content.author}</p>
+                      <p className="text-xs text-gray-400">{combinedItems[currentTraitIndex].content.role}</p>
+                    </motion.div>
+                  </motion.div>
+                )}
               </AnimatePresence>
             </div>
 
