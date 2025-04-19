@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Home } from 'lucide-react';
 
 const Skills = () => {
   const [activeCategory, setActiveCategory] = useState('all');
@@ -10,7 +9,7 @@ const Skills = () => {
   const nodesRef = useRef([]);
   const connectionsRef = useRef([]);
 
-  // Skill categories from resume
+  // Skill categories - consolidated with better organization
   const skillCategories = [
     {
       id: 'programming',
@@ -88,21 +87,6 @@ const Skills = () => {
     }
   ];
 
-  const scrollToSection = (id) => {
-    const element = document.getElementById(id);
-    if (element) {
-      // Get header height for offset calculation
-      const headerHeight = document.querySelector('header')?.offsetHeight || 0;
-      // Calculate the element's position
-      const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
-      // Scroll with offset
-      window.scrollTo({
-        top: elementPosition - headerHeight,
-        behavior: 'smooth'
-      });
-    }
-  };
-
   // Generate all skills array
   const allSkills = skillCategories.flatMap(category => 
     category.skills.map(skill => ({
@@ -117,7 +101,7 @@ const Skills = () => {
     ? allSkills 
     : allSkills.filter(skill => skill.categoryId === activeCategory);
 
-  // Neural network animation
+  // Neural network animation - optimized with memoization and reduced calculations
   useEffect(() => {
     if (!canvasRef.current || !containerRef.current) return;
 
@@ -125,21 +109,30 @@ const Skills = () => {
     const container = containerRef.current;
     const ctx = canvas.getContext('2d');
     
-    // Set canvas size
+    // Set canvas size - optimized to reduce reflows
     const setCanvasSize = () => {
-      canvas.width = container.clientWidth;
-      canvas.height = container.clientHeight;
+      const { width, height } = container.getBoundingClientRect();
+      canvas.width = width;
+      canvas.height = height;
     };
 
     setCanvasSize();
-    window.addEventListener('resize', setCanvasSize);
+    
+    // Throttle resize handler for better performance
+    let resizeTimeout;
+    const handleResize = () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(setCanvasSize, 100);
+    };
+    
+    window.addEventListener('resize', handleResize);
 
-    // Generate nodes based on filteredSkills
+    // Generate nodes - optimized to reduce calculations
     const generateNodes = () => {
       const nodes = [];
       const centerX = canvas.width / 2;
       const centerY = canvas.height / 2;
-      const radius = Math.min(centerX, centerY) * 0.8;
+      const radius = Math.min(centerX, centerY) * 0.7;
 
       filteredSkills.forEach((skill, index) => {
         const angle = (index / filteredSkills.length) * Math.PI * 2;
@@ -148,13 +141,11 @@ const Skills = () => {
         
         nodes.push({
           id: skill.name,
-          x,
-          y,
+          x, y,
           targetX: x,
           targetY: y,
-          radius: 5 + (skill.level / 10),
+          radius: 4 + (skill.level / 20), // Reduced size for better performance
           color: skill.categoryColor,
-          velocity: { x: 0, y: 0 },
           isHovered: skill.name === hoveredSkill,
           categoryId: skill.categoryId
         });
@@ -167,9 +158,8 @@ const Skills = () => {
         y: centerY,
         targetX: centerX,
         targetY: centerY,
-        radius: 15,
+        radius: 12,
         color: '#f0f0f0',
-        velocity: { x: 0, y: 0 },
         isHovered: false,
         isPulsing: true
       });
@@ -177,7 +167,7 @@ const Skills = () => {
       return nodes;
     };
 
-    // Generate connections between nodes
+    // Generate connections - optimized to create fewer connections
     const generateConnections = (nodes) => {
       const connections = [];
       const hubNode = nodes.find(n => n.id === 'hub');
@@ -190,74 +180,99 @@ const Skills = () => {
           connections.push({
             source: hubNode,
             target: node,
-            strength: 0.5,
             isActive: node.isHovered || node.categoryId === activeCategory || activeCategory === 'all'
           });
         }
       });
 
-      // Connect nodes of same category
-      for (let i = 0; i < nodes.length; i++) {
-        for (let j = i + 1; j < nodes.length; j++) {
-          const nodeA = nodes[i];
-          const nodeB = nodes[j];
-          
-          if (nodeA.id !== 'hub' && nodeB.id !== 'hub' && nodeA.categoryId === nodeB.categoryId) {
-            connections.push({
-              source: nodeA,
-              target: nodeB,
-              strength: 0.3,
-              isActive: nodeA.isHovered || nodeB.isHovered || nodeA.categoryId === activeCategory || activeCategory === 'all'
-            });
-          }
+      // Connect nodes of same category - only connect to nearest neighbors to reduce total connections
+      const nodesByCategory = {};
+      nodes.forEach(node => {
+        if (node.id !== 'hub') {
+          if (!nodesByCategory[node.categoryId]) nodesByCategory[node.categoryId] = [];
+          nodesByCategory[node.categoryId].push(node);
         }
-      }
+      });
+      
+      Object.values(nodesByCategory).forEach(categoryNodes => {
+        if (categoryNodes.length < 2) return;
+        
+        // Connect each node to at most 2 other nodes in the same category
+        categoryNodes.forEach((node, index) => {
+          const nextNode = categoryNodes[(index + 1) % categoryNodes.length];
+          connections.push({
+            source: node,
+            target: nextNode,
+            isActive: node.isHovered || nextNode.isHovered || node.categoryId === activeCategory || activeCategory === 'all'
+          });
+        });
+      });
 
       return connections;
     };
 
-    // Draw network
+    // Draw network - optimized rendering
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
+      // Batch similar operations for better performance
       // Draw connections
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+      
       connectionsRef.current.forEach(connection => {
         if (!connection.isActive) return;
         
         ctx.beginPath();
         ctx.moveTo(connection.source.x, connection.source.y);
         ctx.lineTo(connection.target.x, connection.target.y);
-        ctx.strokeStyle = connection.target.isHovered || connection.source.isHovered
-          ? `rgba(255, 255, 255, 0.7)`
-          : `rgba(255, 255, 255, 0.2)`;
-        ctx.lineWidth = connection.target.isHovered || connection.source.isHovered ? 2 : 1;
+        ctx.stroke();
+      });
+      
+      // Draw highlighted connections
+      ctx.lineWidth = 1.5;
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+      
+      connectionsRef.current.forEach(connection => {
+        if (!connection.isActive || !(connection.target.isHovered || connection.source.isHovered)) return;
+        
+        ctx.beginPath();
+        ctx.moveTo(connection.source.x, connection.source.y);
+        ctx.lineTo(connection.target.x, connection.target.y);
         ctx.stroke();
       });
 
-      // Draw nodes
+      // Draw nodes - standard nodes first
       nodesRef.current.forEach(node => {
+        if (node.isHovered || node.isPulsing) return; // Skip special nodes, draw them later
+        
         ctx.beginPath();
         ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+        ctx.fillStyle = node.color;
+        ctx.fill();
+      });
+      
+      // Draw special nodes (hovered or pulsing) with effects
+      nodesRef.current.forEach(node => {
+        if (!node.isHovered && !node.isPulsing) return;
         
-        // Glowing effect for hovered or pulsing nodes
-        if (node.isHovered || node.isPulsing) {
-          const pulseSize = node.isPulsing 
-            ? 4 + 2 * Math.sin(Date.now() * 0.003) 
-            : 8;
-            
-          const gradient = ctx.createRadialGradient(
-            node.x, node.y, node.radius - 2,
-            node.x, node.y, node.radius + pulseSize
-          );
-          gradient.addColorStop(0, node.color);
-          gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        const pulseSize = node.isPulsing 
+          ? 3 + Math.sin(Date.now() * 0.003) 
+          : 5;
           
-          ctx.fillStyle = gradient;
-          ctx.arc(node.x, node.y, node.radius + pulseSize, 0, Math.PI * 2);
-          ctx.fill();
-        }
+        // Glow effect
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, node.radius + pulseSize, 0, Math.PI * 2);
+        const gradient = ctx.createRadialGradient(
+          node.x, node.y, node.radius - 1,
+          node.x, node.y, node.radius + pulseSize
+        );
+        gradient.addColorStop(0, node.color);
+        gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = gradient;
+        ctx.fill();
         
-        // Draw actual node
+        // Actual node
         ctx.beginPath();
         ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
         ctx.fillStyle = node.isHovered ? '#ffffff' : node.color;
@@ -265,13 +280,22 @@ const Skills = () => {
       });
     };
 
-    // Animation loop
+    // Optimized animation loop with reduced movement
     const animate = () => {
-      // Update nodes
+      // Apply subtle movement to nodes
       nodesRef.current.forEach(node => {
-        // Add some random movement
-        node.x += (node.targetX - node.x) * 0.05 + (Math.random() - 0.5) * 0.5;
-        node.y += (node.targetY - node.y) * 0.05 + (Math.random() - 0.5) * 0.5;
+        // Only move by small amounts to improve performance
+        const moveX = (Math.random() - 0.5) * 0.3;
+        const moveY = (Math.random() - 0.5) * 0.3;
+        
+        // Ensure nodes don't drift too far from target
+        if (Math.abs(node.x - node.targetX) > 5 || Math.abs(node.y - node.targetY) > 5) {
+          node.x += (node.targetX - node.x) * 0.05;
+          node.y += (node.targetY - node.y) * 0.05;
+        } else {
+          node.x += moveX;
+          node.y += moveY;
+        }
       });
 
       draw();
@@ -285,7 +309,7 @@ const Skills = () => {
 
     // Cleanup
     return () => {
-      window.removeEventListener('resize', setCanvasSize);
+      window.removeEventListener('resize', handleResize);
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
       }
@@ -293,57 +317,54 @@ const Skills = () => {
   }, [filteredSkills, activeCategory, hoveredSkill]);
 
   return (
-    <section id="skills" className="relative py-20 bg-gray-900 overflow-hidden">
+    <section id="skills" className="relative py-12 bg-gray-900 overflow-hidden">
       {/* Neural network background */}
-      <div ref={containerRef} className="absolute inset-0 opacity-30">
+      <div ref={containerRef} className="absolute inset-0 opacity-20">
         <canvas ref={canvasRef} className="w-full h-full"></canvas>
       </div>
       
-      {/* Digital circuit pattern overlay */}
-      <div className="absolute inset-0 bg-circuit-pattern opacity-5"></div>
-      
       {/* Content container */}
-      <div className="container relative z-10 mx-auto px-6">
-        {/* Section header with glowing effect */}
-        <div className="text-center mb-16">
-          <h2 className="text-6xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-500 to-pink-400">
+      <div className="container relative z-10 mx-auto px-4">
+        {/* Section header - streamlined with reduced vertical space */}
+        <div className="text-center mb-8">
+          <h2 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-500 to-pink-400">
             Skills & Expertise
           </h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 mx-auto mb-6"></div>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+          <div className="w-16 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 mx-auto my-3"></div>
+          <p className="text-gray-300 max-w-3xl mx-auto">
             Comprehensive toolkit of technical capabilities developed over years of AI engineering
           </p>
         </div>
 
-        {/* Category Navigation - futuristic tabs */}
-        <div className="flex flex-wrap justify-center gap-2 mb-12">
-          <button
-            onClick={() => setActiveCategory('all')}
-            className={`category-button ${activeCategory === 'all' ? 'active' : ''}`}
-            style={{ '--color': '#6366f1' }}
-          >
-            <span className="z-10 relative">All Skills</span>
-          </button>
-
-          {skillCategories.map(category => (
+        {/* Category Navigation - compact, horizontally scrollable on mobile */}
+        <div className="mb-8 flex justify-center">
+          <div className="flex items-center space-x-2 overflow-x-auto pb-2 hide-scrollbar">
             <button
-              key={category.id}
-              onClick={() => setActiveCategory(category.id)}
-              className={`category-button ${activeCategory === category.id ? 'active' : ''}`}
-              style={{ '--color': category.color }}
+              onClick={() => setActiveCategory('all')}
+              className={`category-btn ${activeCategory === 'all' ? 'active' : ''}`}
+              style={{ '--color': '#6366f1' }}
             >
-              <span className="z-10 relative">
-                <svg className="w-4 h-4 inline-block mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              All Skills
+            </button>
+
+            {skillCategories.map(category => (
+              <button
+                key={category.id}
+                onClick={() => setActiveCategory(category.id)}
+                className={`category-btn ${activeCategory === category.id ? 'active' : ''}`}
+                style={{ '--color': category.color }}
+              >
+                <svg className="w-3.5 h-3.5 inline-block mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d={category.icon} />
                 </svg>
                 {category.title}
-              </span>
-            </button>
-          ))}
+              </button>
+            ))}
+          </div>
         </div>
 
-        {/* Skills Display - neuron-inspired design */}
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
+        {/* Skills Grid - support for up to 4 columns on larger screens */}
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 max-w-7xl mx-auto">
           {filteredSkills.map((skill) => {
             const category = skillCategories.find(cat => cat.id === skill.categoryId);
             
@@ -355,44 +376,38 @@ const Skills = () => {
                 onMouseEnter={() => setHoveredSkill(skill.name)}
                 onMouseLeave={() => setHoveredSkill(null)}
               >
-                <div className="skill-header">
-                  <h3 className="skill-name">{skill.name}</h3>
-                  <div className="skill-category">
-                    <svg className="w-4 h-4 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <div className="flex justify-between items-start mb-3">
+                  <h3 className="text-base font-semibold text-white">{skill.name}</h3>
+                  <div className="skill-tag" style={{ color: category.color }}>
+                    <svg className="w-3 h-3 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d={category.icon} />
                     </svg>
-                    <span>{category.title}</span>
+                    <span className="text-xs">{category.title}</span>
                   </div>
                 </div>
                 
-                <div className="skill-progress-container">
+                <div className="skill-bar-container">
                   <div 
-                    className="skill-progress-bar" 
-                    style={{ width: `${skill.level}%` }}
+                    className="skill-bar" 
+                    style={{ width: `${skill.level}%`, background: `linear-gradient(90deg, ${skill.categoryColor}, ${skill.categoryColor}80)` }}
                   ></div>
-                  <div className="skill-level">{skill.level}%</div>
-                </div>
-                
-                <div className="pulse-circles">
-                  <div className="pulse-circle"></div>
-                  <div className="pulse-circle delay-1"></div>
-                  <div className="pulse-circle delay-2"></div>
+                  <span className="skill-percentage" style={{ color: skill.categoryColor }}>{skill.level}%</span>
                 </div>
               </div>
             );
           })}
         </div>
         
-        {/* Category Feature Showcase */}
+        {/* Category Details - Shown only when a specific category is selected */}
         {activeCategory !== 'all' && (
-          <div className="mt-16 bg-gray-800/70 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 max-w-4xl mx-auto">
-            <h3 className="text-2xl font-bold mb-4 text-white">
-              <svg className="w-6 h-6 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} style={{ color: skillCategories.find(c => c.id === activeCategory)?.color }}>
+          <div className="mt-8 bg-gray-800/60 backdrop-blur-sm rounded-lg p-5 border border-gray-700 max-w-3xl mx-auto">
+            <h3 className="text-xl font-bold mb-2 text-white flex items-center">
+              <svg className="w-5 h-5 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} style={{ color: skillCategories.find(c => c.id === activeCategory)?.color }}>
                 <path strokeLinecap="round" strokeLinejoin="round" d={skillCategories.find(c => c.id === activeCategory)?.icon} />
               </svg>
               {skillCategories.find(c => c.id === activeCategory)?.title} Expertise
             </h3>
-            <p className="text-gray-300 mb-6">
+            <p className="text-gray-300 text-sm mb-3">
               {activeCategory === 'programming' && "Proficient in multiple programming languages with a focus on performance optimization and clean code architecture."}
               {activeCategory === 'ai-agents' && "Specialized in developing and orchestrating AI agents that can work together to solve complex problems and automate intricate workflows."}
               {activeCategory === 'llms' && "Expert in large language model implementations, from fine-tuning for specialized tasks to deploying optimized models in production environments."}
@@ -400,15 +415,14 @@ const Skills = () => {
               {activeCategory === 'general' && "Strong foundation in theoretical and practical aspects of machine learning and AI systems design."}
               {activeCategory === 'infrastructure' && "Experienced in building robust, scalable infrastructure for deploying and managing AI systems in cloud environments."}
             </p>
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-1.5">
               {skillCategories.find(c => c.id === activeCategory)?.skills.map(skill => (
                 <span 
                   key={skill.name} 
-                  className="px-3 py-1 rounded-full text-sm"
+                  className="px-2 py-0.5 rounded-full text-xs"
                   style={{ 
                     backgroundColor: `${skillCategories.find(c => c.id === activeCategory)?.color}20`,
-                    color: skillCategories.find(c => c.id === activeCategory)?.color,
-                    border: `1px solid ${skillCategories.find(c => c.id === activeCategory)?.color}40` 
+                    color: skillCategories.find(c => c.id === activeCategory)?.color
                   }}
                 >
                   {skill.name}
@@ -419,167 +433,103 @@ const Skills = () => {
         )}
       </div>
 
-      {/* Custom CSS */}
+      {/* Streamlined CSS */}
       <style jsx>{`
-        .bg-circuit-pattern {
-          background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+        /* Hide scrollbar but allow scrolling */
+        .hide-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
         }
-
-        .category-button {
-          position: relative;
-          padding: 0.5rem 1rem;
-          border-radius: 0.5rem;
-          color: #f0f0f0;
-          background-color: rgba(30, 41, 59, 0.7);
-          backdrop-filter: blur(4px);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          overflow: hidden;
-          transition: all 0.3s ease;
+        .hide-scrollbar::-webkit-scrollbar {
+          display: none;
         }
-
-        .category-button::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: var(--color);
-          opacity: 0;
-          transition: opacity 0.3s ease;
+        
+        /* Category buttons */
+        .category-btn {
+          padding: 0.375rem 0.75rem;
+          border-radius: 0.375rem;
+          font-size: 0.875rem;
+          color: #e5e7eb;
+          background-color: rgba(31, 41, 55, 0.5);
+          border: 1px solid rgba(75, 85, 99, 0.3);
+          transition: all 0.2s ease;
+          white-space: nowrap;
         }
-
-        .category-button:hover::before {
-          opacity: 0.1;
+        
+        .category-btn:hover {
+          background-color: rgba(55, 65, 81, 0.5);
+          border-color: rgba(75, 85, 99, 0.5);
         }
-
-        .category-button.active {
+        
+        .category-btn.active {
           background-color: var(--color);
           border-color: var(--color);
-          box-shadow: 0 0 15px var(--color);
+          color: white;
+          box-shadow: 0 0 10px var(--color);
         }
-
-        .category-button.active::before {
-          opacity: 0.2;
-        }
-
+        
+        /* Skill cards */
         .skill-card {
+          background: rgba(31, 41, 55, 0.5);
+          border-radius: 0.5rem;
+          padding: 0.75rem;
+          border: 1px solid rgba(75, 85, 99, 0.3);
           position: relative;
-          background: rgba(30, 41, 59, 0.6);
-          backdrop-filter: blur(4px);
-          border-radius: 1rem;
-          padding: 1.5rem;
-          border: 1px solid rgba(255, 255, 255, 0.1);
           overflow: hidden;
-          transition: all 0.3s ease;
+          transition: all 0.2s ease;
         }
-
+        
         .skill-card::before {
           content: '';
           position: absolute;
           top: 0;
           left: 0;
-          width: 4px;
+          width: 3px;
           height: 100%;
           background: var(--accent-color);
-          opacity: 0.8;
-          transition: all 0.3s ease;
+          transition: all 0.2s ease;
         }
-
+        
         .skill-card:hover {
-          transform: translateY(-5px);
           border-color: var(--accent-color);
-          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3), 0 0 15px rgba(var(--accent-color), 0.3);
+          transform: translateY(-2px);
         }
-
+        
         .skill-card:hover::before {
-          width: 100%;
-          opacity: 0.05;
+          width: 5px;
         }
-
-        .skill-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: flex-start;
-          margin-bottom: 1rem;
-        }
-
-        .skill-name {
-          font-size: 1.25rem;
-          font-weight: 600;
-          color: white;
-        }
-
-        .skill-category {
-          font-size: 0.75rem;
+        
+        /* Skill tag */
+        .skill-tag {
           display: flex;
           align-items: center;
           gap: 0.25rem;
-          color: var(--accent-color);
-          background-color: rgba(255, 255, 255, 0.1);
-          padding: 0.25rem 0.5rem;
+          padding: 0.125rem 0.375rem;
+          background-color: rgba(255, 255, 255, 0.05);
           border-radius: 1rem;
         }
-
-        .skill-progress-container {
-          position: relative;
-          height: 8px;
+        
+        /* Skill bar */
+        .skill-bar-container {
+          height: 6px;
           background-color: rgba(255, 255, 255, 0.1);
-          border-radius: 4px;
-          margin-bottom: 0.5rem;
+          border-radius: 3px;
+          position: relative;
           overflow: hidden;
         }
-
-        .skill-progress-bar {
+        
+        .skill-bar {
           height: 100%;
-          background: linear-gradient(90deg, var(--accent-color), rgba(255, 255, 255, 0.5));
-          border-radius: 4px;
-          transition: width 1s cubic-bezier(0.19, 1, 0.22, 1);
+          border-radius: 3px;
+          transition: width 0.8s ease-out;
         }
-
-        .skill-level {
+        
+        .skill-percentage {
           position: absolute;
           right: 0;
-          top: 0.5rem;
-          font-size: 0.875rem;
-          color: var(--accent-color);
-        }
-
-        .pulse-circles {
-          position: absolute;
-          right: 1rem;
-          bottom: 1rem;
-          width: 20px;
-          height: 20px;
-        }
-
-        .pulse-circle {
-          position: absolute;
-          width: 100%;
-          height: 100%;
-          border-radius: 50%;
-          border: 2px solid var(--accent-color);
-          opacity: 0;
-          animation: pulse 3s infinite;
-        }
-
-        .delay-1 {
-          animation-delay: 1s;
-        }
-
-        .delay-2 {
-          animation-delay: 2s;
-        }
-
-        @keyframes pulse {
-          0% {
-            transform: scale(0);
-            opacity: 0.8;
-          }
-          100% {
-            transform: scale(2);
-            opacity: 0;
-          }
+          top: -1.25rem;
+          font-size: 0.75rem;
+          font-weight: 500;
         }
       `}</style>
     </section>
