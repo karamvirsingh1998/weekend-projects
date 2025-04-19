@@ -446,16 +446,25 @@ const Hero = () => {
   // Rotate through traits and testimonials
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentTraitIndex((prev) => (prev + 1) % combinedItems.length);
-    }, 6000); // Increased display time to 6 seconds for better readability
+      setCurrentTraitIndex((prev) => {
+        // Generate a random index that's different from the current one
+        let nextIndex;
+        do {
+          nextIndex = Math.floor(Math.random() * combinedItems.length);
+        } while (nextIndex === prev && combinedItems.length > 1);
+        
+        return nextIndex;
+      });
+    }, 4000); // Display time se t to 6 seconds
+    
     return () => clearInterval(interval);
   }, [combinedItems.length]);
-   
+
   // Rotate through traits
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentTraitIndex((prev) => (prev + 1) % traits.length);
-    }, 3000);
+    }, 4000);
     return () => clearInterval(interval);
   }, [traits.length]);
 
