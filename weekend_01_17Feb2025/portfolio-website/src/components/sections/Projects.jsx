@@ -1,7 +1,24 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { Home, ExternalLink, ChevronLeft, ChevronRight, Code, Search, X, Filter, Tag } from 'lucide-react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { Home, ChevronLeft, ChevronRight, Code, Search, X, Filter, Tag, ExternalLink, Eye, Zap } from 'lucide-react';
 
-// Project data (moved outside component to prevent re-creation)
+// Project data remains the same
+// const projectsData = [
+//   {
+//     id: 1,
+//     title: 'MultiModal AI-Agentic Framework',
+//     company: 'UnifyApps',
+//     category: 'ai-agents',
+//     description: 'Architected a comprehensive framework integrating transformer-based models for cross-modal text, speech, and vision processing. The system successfully deployed across 10+ clients, seamlessly integrating their complex workflows.',
+//     impact: [
+//       'Achieved 1M+ in annual cost savings',
+//       '30% reduction in processing times',
+//       'Streamlined operations across multiple departments'
+//     ],
+//     technologies: ['LLMs', 'Transformers', 'MultiModal AI', 'Agentic Systems', 'RAG'],
+//     image: '/projects/project.png'
+//   },
+//   // Other projects...
+// ];
 const projectsData = [
   {
     id: 1,
@@ -145,429 +162,1067 @@ const projectsData = [
   }
 ];
 
-// Categories data
+// Categories data with AI-themed icons
 const categories = [
-  { id: 'all', label: 'All', icon: <Home className="w-4 h-4" /> },
+  { id: 'all', label: 'All Projects', icon: <Home className="w-4 h-4" /> },
   { id: 'ai-agents', label: 'AI Agents', icon: <Code className="w-4 h-4" /> },
   { id: 'voice-tech', label: 'Voice Tech', icon: <ExternalLink className="w-4 h-4" /> },
   { id: 'analytics', label: 'Analytics', icon: <Tag className="w-4 h-4" /> }
 ];
 
-// Main Project Card Component
-const ProjectCard = ({ project, onClick }) => (
-  <div
-    className="bg-gray-800/80 rounded-lg overflow-hidden border border-gray-700 cursor-pointer group hover:border-blue-500 transition-all"
-    onClick={() => onClick(project)}
-  >
-    <div className="aspect-video relative">
-      <img
-        src={project.image}
-        alt={project.title}
-        className="w-full h-full object-cover"
-        onError={(e) => {
-          e.target.onerror = null;
-          e.target.src = `https://via.placeholder.com/400x225?text=${project.title}`;
-        }}
-      />
-      <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/60 to-transparent"></div>
-      <div className="absolute top-2 right-2">
-        <span className="inline-block px-2 py-0.5 bg-gray-900/70 rounded text-xs text-gray-300">
-          {project.company}
-        </span>
-      </div>
-      <div className="absolute inset-x-3 bottom-3 flex flex-col">
-        <h3 className="text-white font-medium text-sm line-clamp-1">{project.title}</h3>
-        <div className="flex gap-1 mt-1.5 flex-wrap">
-          {project.technologies.slice(0, 2).map(tech => (
-            <span key={tech} className="px-1.5 py-0.5 bg-blue-900/40 text-blue-300 rounded text-xs">
-              {tech}
-            </span>
-          ))}
-          {project.technologies.length > 2 && (
-            <span className="px-1.5 py-0.5 bg-gray-700/60 text-gray-300 rounded text-xs">
-              +{project.technologies.length - 2}
-            </span>
-          )}
-        </div>
-      </div>
-    </div>
-  </div>
-);
+const NeuralNode = ({ project, isActive, onClick }) => {
+  const category = project.category;
+  const colorMap = {
+    'ai-agents': '#4f46e5',
+    'voice-tech': '#10b981',
+    'analytics': '#f59e0b'
+  };
+  const color = colorMap[category] || '#3b82f6';
 
-// Featured Project Component
-const FeaturedProject = ({ project, onNext, onPrev, currentIndex, totalCount, onViewDetails }) => (
-  <div className="mb-10 overflow-hidden bg-gradient-to-br from-gray-800/80 to-gray-900/80 rounded-xl border border-gray-700 shadow-lg">
-    <div className="grid md:grid-cols-2 h-[28rem]">
-      {/* Project image */}
-      <div className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-gray-900/80 to-transparent z-10"></div>
-        <img
-          src={project.image}
-          alt={project.title}
-          className="w-full h-full object-cover"
-          onError={(e) => {
-            e.target.onerror = null;
-            e.target.src = `https://via.placeholder.com/600x400?text=${project.title}`;
-          }}
-        />
-
-        {/* Company badge */}
-        <div className="absolute top-4 left-4 z-20">
-          <span className="bg-gray-900/80 px-3 py-1 rounded-full text-sm text-blue-400 font-medium">
-            {project.company}
-          </span>
-        </div>
-
-        <div className="absolute bottom-4 left-4 z-20">
-          <button
-            onClick={() => onViewDetails(project)}
-            className="bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-lg text-sm text-white flex items-center gap-1.5"
-          >
-            <span>View Details</span>
-          </button>
-        </div>
-      </div>
-
-      {/* Project details */}
-      <div className="p-6 flex flex-col h-full overflow-auto">
-        <h2 className="text-2xl font-bold text-white mb-2">{project.title}</h2>
-        <p className="text-gray-300 text-base mb-4">{project.description}</p>
-
-        {/* Technologies */}
-        <div className="mb-4">
-          <h3 className="text-blue-400 text-sm font-medium mb-2 flex items-center gap-1.5">
-            <Code size={14} />
-            Technologies
-          </h3>
-          <div className="flex flex-wrap gap-1.5">
-            {project.technologies.map(tech => (
-              <span
-                key={tech}
-                className="px-2 py-1 bg-blue-900/40 text-blue-300 rounded-md text-xs font-medium"
-              >
-                {tech}
-              </span>
-            ))}
-          </div>
-        </div>
-
-        {/* Impact section */}
-        <div className="mt-auto">
-          <h3 className="text-blue-400 text-sm font-medium mb-2">
-            Key Impact
-          </h3>
-          <ul className="space-y-1">
-            {project.impact.map((item, idx) => (
-              <li key={idx} className="flex items-start">
-                <span className="text-blue-500 mr-1.5 mt-1 text-xs">•</span>
-                <span className="text-gray-300 text-sm">{item}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </div>
-    
-    {/* Navigation arrows */}
-    <div className="absolute bottom-4 right-4 z-20 flex gap-2">
-      <button
-        onClick={onPrev}
-        className="p-2 rounded-full bg-gray-800/80 border border-gray-700 hover:bg-blue-600"
-        aria-label="Previous project"
-      >
-        <ChevronLeft size={18} />
-      </button>
-      <button
-        onClick={onNext}
-        className="p-2 rounded-full bg-gray-800/80 border border-gray-700 hover:bg-blue-600"
-        aria-label="Next project"
-      >
-        <ChevronRight size={18} />
-      </button>
-    </div>
-
-    {/* Page indicator */}
-    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 bg-gray-900/80 px-3 py-1 rounded-full">
-      <span className="text-white text-sm">
-        {currentIndex + 1} / {totalCount}
-      </span>
-    </div>
-  </div>
-);
-
-// Project Details Modal Component
-const ProjectModal = ({ project, onClose }) => (
-  <div 
-    className="fixed inset-0 z-50 bg-gray-900/95 flex items-center justify-center p-4 overflow-auto"
-    onClick={onClose}
-  >
+  return (
     <div 
-      className="bg-gray-800 rounded-xl w-full max-w-3xl max-h-[90vh] overflow-auto border border-gray-700 shadow-2xl"
-      onClick={(e) => e.stopPropagation()}
+      className={`neural-node cursor-pointer ${isActive ? 'active' : ''}`}
+      style={{ '--node-color': color }}
+      onClick={onClick}
     >
-      <div className="relative aspect-video bg-gray-900">
-        <img
-          src={project.image}
-          alt={project.title}
-          className="w-full h-full object-cover"
-          onError={(e) => {
-            e.target.onerror = null;
-            e.target.src = `https://via.placeholder.com/1200x600?text=${project.title}`;
-          }}
-        />
-        <div className="absolute top-4 right-4">
-          <button
-            onClick={onClose}
-            className="p-3 rounded-full bg-gray-900/60 text-white hover:bg-gray-700"
-          >
-            <X size={18} />
-          </button>
+      <div className="node-content">
+        <div className="node-header">
+          <h3 className="node-title">{project.title}</h3>
+          <span className="node-company">{project.company}</span>
         </div>
-        <div className="absolute top-4 left-4">
-          <span className="px-3 py-1 bg-gray-900/70 rounded-full text-white font-medium">
-            {project.company}
-          </span>
-        </div>
-      </div>
-
-      <div className="p-6">
-        <h2 className="text-2xl font-bold text-white mb-4">{project.title}</h2>
-        <p className="text-gray-300 text-lg mb-6">{project.description}</p>
-
-        <div className="grid sm:grid-cols-2 gap-6">
-          {/* Impact section */}
-          <div>
-            <h3 className="text-blue-400 font-semibold mb-3">
-              Key Impact
-            </h3>
-            <ul className="space-y-2">
-              {project.impact.map((item, idx) => (
-                <li key={idx} className="flex items-start">
-                  <span className="text-blue-500 mr-2">•</span>
-                  <span className="text-gray-300">{item}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Technologies */}
-          <div>
-            <h3 className="text-blue-400 font-semibold mb-3">
-              Technologies
-            </h3>
-            <div className="flex flex-wrap gap-2">
-              {project.technologies.map(tech => (
-                <span
-                  key={tech}
-                  className="px-3 py-1.5 bg-blue-900/40 text-blue-300 rounded-lg text-sm font-medium"
-                >
-                  {tech}
-                </span>
-              ))}
-            </div>
-          </div>
+        <div className="node-tech">
+          {project.technologies.slice(0, 3).map(tech => (
+            <span key={tech} className="tech-tag">{tech}</span>
+          ))}
         </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
-// Projects Section Component
 const Projects = () => {
-  // State with fewer variables
-  const [filters, setFilters] = useState({
-    category: 'all',
-    search: '',
-    showFilters: false
-  });
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [selectedProject, setSelectedProject] = useState(null);
+  // State management
+  const [activeCategory, setActiveCategory] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeProject, setActiveProject] = useState(null);
+  const [showProjectDetails, setShowProjectDetails] = useState(false);
+  const [isSearchExpanded, setIsSearchExpanded] = useState(false);
 
-  // Filter projects based on category and search query - memoized
+  // Refs for animations
+  const neuralNetRef = useRef(null);
+  const nodeRefs = useRef({});
+  
+  // Filter projects based on category and search
   const filteredProjects = useMemo(() => {
     return projectsData.filter(project => {
       // Category filter
-      const categoryMatch = filters.category === 'all' || project.category === filters.category;
+      const categoryMatch = activeCategory === 'all' || project.category === activeCategory;
       
       // Search filter
-      const searchLower = filters.search.toLowerCase();
-      const searchMatch = filters.search === '' ||
+      const searchLower = searchQuery.toLowerCase().trim();
+      const searchMatch = !searchLower ||
         project.title.toLowerCase().includes(searchLower) ||
         project.description.toLowerCase().includes(searchLower) ||
         project.technologies.some(tech => tech.toLowerCase().includes(searchLower));
       
       return categoryMatch && searchMatch;
     });
-  }, [filters]);
+  }, [activeCategory, searchQuery]);
 
-  // Reset current index when filters change
+  // Set first project as active when filtered list changes
   useEffect(() => {
-    setCurrentIndex(0);
-  }, [filters.category, filters.search]);
-
-  // Navigation handlers
-  const handlePrevProject = () => {
-    setCurrentIndex((prev) => (prev === 0 ? filteredProjects.length - 1 : prev - 1));
-  };
-
-  const handleNextProject = () => {
-    setCurrentIndex((prev) => (prev === filteredProjects.length - 1 ? 0 : prev + 1));
-  };
-
-  // Reset filters
-  const resetFilters = () => {
-    setFilters({
-      category: 'all',
-      search: '',
-      showFilters: false
-    });
-  };
-
-  // Handler for scrolling to sections
-  const scrollToSection = (id) => {
-    const element = document.getElementById(id);
-    if (element) {
-      const headerHeight = document.querySelector('header')?.offsetHeight || 0;
-      const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
-      window.scrollTo({
-        top: elementPosition - headerHeight,
-        behavior: 'smooth'
-      });
+    if (filteredProjects.length > 0) {
+      if (!activeProject || !filteredProjects.includes(activeProject)) {
+        setActiveProject(filteredProjects[0]);
+      }
+    } else {
+      setActiveProject(null);
     }
+  }, [filteredProjects]);
+
+  // Draw neural connections
+  useEffect(() => {
+    if (!neuralNetRef.current || Object.keys(nodeRefs.current).length === 0) return;
+    
+    const canvas = neuralNetRef.current;
+    const ctx = canvas.getContext('2d');
+    
+    // Set canvas size
+    const resizeCanvas = () => {
+      const container = canvas.parentElement;
+      canvas.width = container.offsetWidth;
+      canvas.height = container.offsetHeight;
+    };
+    
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+    
+    // Draw connections
+    const drawConnections = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Set line style
+      ctx.strokeStyle = 'rgba(59, 130, 246, 0.15)';
+      ctx.lineWidth = 1;
+
+      // Draw connections from active project to others
+      if (activeProject && nodeRefs.current[activeProject.id]) {
+        const activeNode = nodeRefs.current[activeProject.id];
+        if (!activeNode) return;
+        
+        const activeRect = activeNode.getBoundingClientRect();
+        const canvasRect = canvas.getBoundingClientRect();
+        
+        const startX = activeRect.left + activeRect.width / 2 - canvasRect.left;
+        const startY = activeRect.top + activeRect.height / 2 - canvasRect.top;
+        
+        // Connect to other nodes
+        filteredProjects.forEach(project => {
+          if (project.id === activeProject.id) return;
+          
+          const targetNode = nodeRefs.current[project.id];
+          if (!targetNode) return;
+          
+          const targetRect = targetNode.getBoundingClientRect();
+          const endX = targetRect.left + targetRect.width / 2 - canvasRect.left;
+          const endY = targetRect.top + targetRect.height / 2 - canvasRect.top;
+          
+          // Draw line with animated effect
+          ctx.beginPath();
+          ctx.moveTo(startX, startY);
+          
+          // Data-flow animation
+          const now = Date.now() / 1000;
+          const frequency = 0.5; // Data packets per second
+          const speed = 1.5; // Animation speed
+          
+          // Draw segmented line for data flow effect
+          const distance = Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2));
+          const segments = 20;
+          const segmentLength = distance / segments;
+          
+          for (let i = 0; i <= segments; i++) {
+            const t = i / segments;
+            const x = startX + (endX - startX) * t;
+            const y = startY + (endY - startY) * t;
+            
+            if (i === 0) {
+              ctx.moveTo(x, y);
+            } else {
+              ctx.lineTo(x, y);
+            }
+            
+            // Add data packet animation
+            const phaseShift = (project.id * 0.1) % 1; // Different phase for each connection
+            const animProgress = ((now * speed + phaseShift) * frequency) % 1;
+            
+            if (Math.abs(t - animProgress) < 0.05) {
+              // Data packet
+              ctx.save();
+              ctx.fillStyle = project.category === 'ai-agents' ? '#4f46e5' : 
+                              project.category === 'voice-tech' ? '#10b981' : 
+                              project.category === 'analytics' ? '#f59e0b' : '#3b82f6';
+              ctx.beginPath();
+              ctx.arc(x, y, 3, 0, Math.PI * 2);
+              ctx.fill();
+              ctx.restore();
+            }
+          }
+          
+          ctx.stroke();
+        });
+      }
+      
+      requestAnimationFrame(drawConnections);
+    };
+    
+    const animFrame = requestAnimationFrame(drawConnections);
+    
+    return () => {
+      window.removeEventListener('resize', resizeCanvas);
+      cancelAnimationFrame(animFrame);
+    };
+  }, [filteredProjects, activeProject]);
+
+  // Clear search handler
+  const handleClearSearch = () => {
+    setSearchQuery('');
+  };
+
+  // Reset filters handler
+  const handleResetFilters = () => {
+    setActiveCategory('all');
+    setSearchQuery('');
   };
 
   return (
-    <section id="projects" className="py-20 bg-gradient-to-b from-gray-800 to-gray-900 relative overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-900/20 via-gray-900/0 to-gray-900/0"></div>
+    <section id="projects" className="py-12 bg-gray-900 relative overflow-hidden">
+      {/* AI-themed background patterns */}
+      <div className="absolute inset-0 z-0 opacity-10">
+        <div className="absolute inset-0 bg-grid-pattern"></div>
+        <div className="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-blue-600/10 to-transparent"></div>
+        <div className="absolute bottom-0 left-0 w-full h-64 bg-gradient-to-t from-purple-600/10 to-transparent"></div>
       </div>
 
-      <div className="container mx-auto px-4 sm:px-6 relative z-10">
-        {/* Header with navigation and filters */}
-        <div className="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          {/* Back button and title */}
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => scrollToSection('hero')}
-              className="flex items-center justify-center p-3 rounded-full bg-gray-800 hover:bg-gray-700 border border-gray-700"
-            >
-              <Home className="w-5 h-5 text-gray-300" />
-            </button>
-            <h1 className="text-3xl font-bold text-white">Projects</h1>
-          </div>
+      <div className="container mx-auto px-4 relative z-10">
+        {/* Header with AI theme */}
+        <div className="mb-6 text-center">
+          <h2 className="text-3xl font-bold text-white inline-flex items-center gap-2 justify-center">
+            <span className="text-blue-400">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 2H2v10h10V2zM22 2h-8v10h8V2zM12 14H2v8h10v-8zM22 14h-8v8h8v-8z"/>
+              </svg>
+            </span>
+            Project Network
+          </h2>
+          <p className="text-gray-400 mt-1">Explore the neural network of my AI engineering projects</p>
+        </div>
 
-          {/* Search and filters */}
-          <div className="w-full sm:w-auto flex flex-col sm:flex-row gap-2">
-            {/* Search */}
-            <div className="relative flex-grow">
+        {/* Interactive search and filter interface */}
+        <div className="flex flex-wrap justify-center gap-3 mb-6">
+          {/* Toggle buttons for categories */}
+          <div className="flex overflow-x-auto hide-scrollbar py-1 max-w-full">
+            {categories.map(category => (
+              <button
+                key={category.id}
+                onClick={() => setActiveCategory(category.id)}
+                className={`category-btn ${activeCategory === category.id ? 'active' : ''}`}
+              >
+                {React.cloneElement(category.icon, { 
+                  size: 16, 
+                  className: "inline-block mr-1.5" 
+                })}
+                {category.label}
+              </button>
+            ))}
+          </div>
+          
+          {/* Expandable search */}
+          <div className={`search-container ${isSearchExpanded ? 'expanded' : ''}`}>
+            <button 
+              className="search-toggle"
+              onClick={() => setIsSearchExpanded(!isSearchExpanded)}
+            >
+              <Search size={16} />
+            </button>
+            <div className="search-input-wrapper">
               <input
                 type="text"
-                className="bg-gray-800 border border-gray-700 text-white rounded-lg focus:ring-2 focus:ring-blue-500 w-full pl-10 pr-4 py-2"
                 placeholder="Search projects..."
-                value={filters.search}
-                onChange={(e) => setFilters({...filters, search: e.target.value})}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="search-input"
               />
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-              {filters.search && (
-                <button
-                  onClick={() => setFilters({...filters, search: ''})}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
-                >
-                  <X size={16} />
+              {searchQuery && (
+                <button onClick={handleClearSearch} className="search-clear">
+                  <X size={14} />
                 </button>
               )}
             </div>
-
-            {/* Filter button */}
-            <button
-              onClick={() => setFilters({...filters, showFilters: !filters.showFilters})}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg border ${
-                filters.showFilters || filters.category !== 'all'
-                  ? 'bg-blue-600 border-blue-500 text-white'
-                  : 'bg-gray-800 border-gray-700 text-gray-300'
-              }`}
-            >
-              <Filter size={16} />
-              <span>Filter</span>
-              {filters.category !== 'all' && (
-                <span className="bg-white/20 text-white text-xs px-2 py-0.5 rounded-full">1</span>
-              )}
-            </button>
           </div>
         </div>
 
-        {/* Filter categories */}
-        {filters.showFilters && (
-          <div className="mb-6">
-            <div className="flex flex-wrap gap-2 p-4 bg-gray-800/50 rounded-xl border border-gray-700">
-              {categories.map(category => (
-                <button
-                  key={category.id}
-                  onClick={() => setFilters({...filters, category: category.id})}
-                  className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
-                    filters.category === category.id
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-                  }`}
-                >
-                  {React.cloneElement(category.icon, { size: 14 })}
-                  {category.label}
-                </button>
-              ))}
+        {filteredProjects.length > 0 ? (
+          <div className="neural-network-container relative">
+            {/* Canvas for neural connections */}
+            <canvas 
+              ref={neuralNetRef} 
+              className="absolute inset-0 w-full h-full" 
+            />
+            
+            <div className="mb-8">
+            {/* Featured project display in AI-display format */}
+            {activeProject && (
+              <div className="ai-display-panel mb-8">
+                <div className="display-header">
+                  <div className="flex items-center">
+                    <span className="status-indicator"></span>
+                    <h3 className="text-white text-lg font-bold truncate">
+                      {activeProject.title}
+                    </h3>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-blue-300 bg-blue-900/30 px-2 py-0.5 rounded">
+                      {activeProject.company}
+                    </span>
+                    <button 
+                      className="expand-btn"
+                      onClick={() => setShowProjectDetails(true)}
+                      title="View full details"
+                    >
+                      <Eye size={16} />
+                    </button>
+                  </div>
+                </div>
+                
+                <div className="display-content">
+                  <div className="data-section">
+                    <div className="data-header">
+                      <Code size={14} className="text-blue-400" />
+                      <span>Project Overview</span>
+                    </div>
+                    <p className="text-gray-300 text-sm line-clamp-3">
+                      {activeProject.description}
+                    </p>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-3 mb-3">
+                    <div className="data-section">
+                      <div className="data-header">
+                        <Zap size={14} className="text-green-400" />
+                        <span>Key Impact</span>
+                      </div>
+                      <ul className="impact-list">
+                        {activeProject.impact.map((item, idx) => (
+                          <li key={idx} className="impact-item">
+                            <span className="impact-bullet"></span>
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    
+                    <div className="data-section">
+                      <div className="data-header">
+                        <Tag size={14} className="text-purple-400" />
+                        <span>Tech Stack</span>
+                      </div>
+                      <div className="flex flex-wrap gap-1">
+                        {activeProject.technologies.map(tech => (
+                          <span key={tech} className="tech-badge">
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="project-navigation">
+                    <button 
+                      onClick={() => {
+                        const currentIndex = filteredProjects.findIndex(p => p.id === activeProject.id);
+                        const prevIndex = currentIndex === 0 ? filteredProjects.length - 1 : currentIndex - 1;
+                        setActiveProject(filteredProjects[prevIndex]);
+                      }}
+                      className="nav-button"
+                    >
+                      <ChevronLeft size={16} />
+                      <span>Previous</span>
+                    </button>
+                    
+                    <div className="text-xs text-gray-500">
+                      {filteredProjects.findIndex(p => p.id === activeProject.id) + 1} / {filteredProjects.length}
+                    </div>
+                    
+                    <button 
+                      onClick={() => {
+                        const currentIndex = filteredProjects.findIndex(p => p.id === activeProject.id);
+                        const nextIndex = currentIndex === filteredProjects.length - 1 ? 0 : currentIndex + 1;
+                        setActiveProject(filteredProjects[nextIndex]);
+                      }}
+                      className="nav-button"
+                    >
+                      <span>Next</span>
+                      <ChevronRight size={16} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            {/* Neural network project grid */}
+            <div className="neural-nodes-wrapper">
+              <div className="neural-nodes-grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                {filteredProjects.map(project => (
+                  <div 
+                    key={project.id}
+                    ref={el => nodeRefs.current[project.id] = el}
+                  >
+                    <NeuralNode 
+                      project={project}
+                      isActive={activeProject && activeProject.id === project.id}
+                      onClick={() => setActiveProject(project)}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
             </div>
           </div>
-        )}
-
-        {filteredProjects.length > 0 ? (
-          <>
-            {/* Featured project card */}
-            <div className="relative">
-              {filteredProjects.length > 0 && (
-                <FeaturedProject
-                  project={filteredProjects[currentIndex]}
-                  onNext={handleNextProject}
-                  onPrev={handlePrevProject}
-                  currentIndex={currentIndex}
-                  totalCount={filteredProjects.length}
-                  onViewDetails={setSelectedProject}
-                />
-              )}
-            </div>
-
-            {/* Project grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredProjects.map((project) => (
-                <ProjectCard 
-                  key={project.id}
-                  project={project}
-                  onClick={setSelectedProject}
-                />
-              ))}
-            </div>
-          </>
         ) : (
-          // No results state
-          <div className="bg-gray-800/80 rounded-xl p-8 text-center max-w-md mx-auto border border-gray-700">
-            <h3 className="text-xl font-bold text-white mb-2">No projects found</h3>
-            <p className="text-gray-400 mb-4 text-sm">Try adjusting your search or filter criteria</p>
+          // No results state with AI-themed empty state
+          <div className="ai-empty-state">
+            <div className="empty-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M8 15h8M9 9h.01M15 9h.01" />
+              </svg>
+            </div>
+            <h3 className="text-xl font-bold text-white">No matching projects found</h3>
+            <p className="text-gray-400 mb-4">The neural network couldn't identify any projects matching your criteria</p>
             <button
-              onClick={resetFilters}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium mx-auto"
+              onClick={handleResetFilters}
+              className="reset-btn"
             >
-              Show all projects
+              Reset Filters
             </button>
           </div>
         )}
       </div>
 
-      {/* Project details modal */}
-      {selectedProject && (
-        <ProjectModal
-          project={selectedProject}
-          onClose={() => setSelectedProject(null)}
-        />
+      {/* Full project details modal with AI theme */}
+      {showProjectDetails && activeProject && (
+        <div 
+          className="fixed inset-0 z-50 bg-gray-900/95 backdrop-blur-sm flex items-center justify-center p-4"
+          onClick={() => setShowProjectDetails(false)}
+        >
+          <div 
+            className="ai-modal"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="modal-design-elements">
+              <div className="design-circle left-top"></div>
+              <div className="design-circle right-bottom"></div>
+              <div className="design-line"></div>
+            </div>
+            
+            <div className="modal-header">
+              <div className="header-left">
+                <div className="modal-id">
+                  PROJECT ID: {activeProject.id.toString().padStart(2, '0')}
+                </div>
+                <h2 className="modal-title">{activeProject.title}</h2>
+                <div className="modal-company">{activeProject.company}</div>
+              </div>
+              
+              <button 
+                onClick={() => setShowProjectDetails(false)} 
+                className="modal-close"
+              >
+                <X size={18} />
+              </button>
+            </div>
+            
+            <div className="modal-content">
+              <div className="modal-section">
+                <h3 className="section-title">
+                  <span className="section-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect>
+                      <line x1="7" y1="2" x2="7" y2="22"></line>
+                      <line x1="17" y1="2" x2="17" y2="22"></line>
+                      <line x1="2" y1="12" x2="22" y2="12"></line>
+                      <line x1="2" y1="7" x2="7" y2="7"></line>
+                      <line x1="2" y1="17" x2="7" y2="17"></line>
+                      <line x1="17" y1="17" x2="22" y2="17"></line>
+                      <line x1="17" y1="7" x2="22" y2="7"></line>
+                    </svg>
+                  </span>
+                  Project Overview
+                </h3>
+                <p className="section-text">{activeProject.description}</p>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="modal-section">
+                  <h3 className="section-title">
+                    <span className="section-icon">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                      </svg>
+                    </span>
+                    Key Impact
+                  </h3>
+                  <ul className="modal-list">
+                    {activeProject.impact.map((item, idx) => (
+                      <li key={idx}>
+                        <span className="list-bullet"></span>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                
+                <div className="modal-section">
+                  <h3 className="section-title">
+                    <span className="section-icon">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="16 18 22 12 16 6"></polyline>
+                        <polyline points="8 6 2 12 8 18"></polyline>
+                      </svg>
+                    </span>
+                    Technologies
+                  </h3>
+                  <div className="flex flex-wrap gap-1.5">
+                    {activeProject.technologies.map(tech => (
+                      <span key={tech} className="modal-tech">
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Modal navigation */}
+            <div className="modal-footer">
+              <button 
+                onClick={() => {
+                  const currentIndex = filteredProjects.findIndex(p => p.id === activeProject.id);
+                  const prevIndex = currentIndex === 0 ? filteredProjects.length - 1 : currentIndex - 1;
+                  setActiveProject(filteredProjects[prevIndex]);
+                }}
+                className="modal-nav-btn"
+              >
+                <ChevronLeft size={16} />
+                <span>Previous Project</span>
+              </button>
+              
+              <button 
+                onClick={() => {
+                  const currentIndex = filteredProjects.findIndex(p => p.id === activeProject.id);
+                  const nextIndex = currentIndex === filteredProjects.length - 1 ? 0 : currentIndex + 1;
+                  setActiveProject(filteredProjects[nextIndex]);
+                }}
+                className="modal-nav-btn"
+              >
+                <span>Next Project</span>
+                <ChevronRight size={16} />
+              </button>
+            </div>
+          </div>
+        </div>
       )}
+
+      {/* AI-themed CSS styles */}
+      <style jsx>{`
+        /* AI Grid Pattern Background */
+        .bg-grid-pattern {
+          background-size: 20px 20px;
+          background-image: 
+            linear-gradient(to right, rgba(59, 130, 246, 0.05) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(59, 130, 246, 0.05) 1px, transparent 1px);
+        }
+        
+        /* Hide scrollbar but keep functionality */
+        .hide-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        
+        /* Category buttons */
+        .category-btn {
+          position: relative;
+          padding: 0.5rem 0.75rem;
+          margin-right: 0.5rem;
+          background-color: rgba(31, 41, 55, 0.5);
+          color: #e5e7eb;
+          border-radius: 0.25rem;
+          border: 1px solid rgba(75, 85, 99, 0.3);
+          transition: all 0.2s;
+          display: flex;
+          align-items: center;
+          white-space: nowrap;
+        }
+        .category-btn::after {
+          content: '';
+          position: absolute;
+          bottom: -1px;
+          left: 0;
+          width: 0;
+          height: 2px;
+          background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+          transition: width 0.3s ease;
+        }
+        .category-btn:hover::after {
+          width: 100%;
+        }
+        .category-btn.active {
+          background-color: rgba(37, 99, 235, 0.2);
+          border-color: rgba(59, 130, 246, 0.5);
+          color: white;
+        }
+        .category-btn.active::after {
+          width: 100%;
+        }
+        
+        /* Search container with expand/collapse */
+        .search-container {
+          position: relative;
+          display: flex;
+          align-items: center;
+          background-color: rgba(31, 41, 55, 0.5);
+          border-radius: 0.25rem;
+          border: 1px solid rgba(75, 85, 99, 0.3);
+          overflow: hidden;
+          transition: all 0.3s ease;
+          width: 36px;
+        }
+        .search-container.expanded {
+          width: 200px;
+        }
+        .search-toggle {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 36px;
+          height: 36px;
+          color: #e5e7eb;
+          flex-shrink: 0;
+        }
+        .search-input-wrapper {
+          overflow: hidden;
+          width: 0;
+          transition: width 0.3s ease;
+        }
+        .search-container.expanded .search-input-wrapper {
+          width: 164px;
+        }
+        .search-input {
+          width: 100%;
+          background: transparent;
+          border: none;
+          outline: none;
+          color: white;
+          padding: 0 0.5rem;
+          font-size: 0.875rem;
+        }
+        .search-clear {
+          position: absolute;
+          right: 8px;
+          top: 50%;
+          transform: translateY(-50%);
+          color: #9ca3af;
+          transition: color 0.2s;
+        }
+        .search-clear:hover {
+          color: white;
+        }
+        
+        /* Neural network container */
+        .neural-network-container {
+          min-height: 60vh;
+          position: relative;
+        }
+        
+        /* Neural nodes */
+        .neural-nodes-wrapper {
+          position: relative;
+        }
+        .neural-nodes-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+          gap: 1rem;
+        }
+        .neural-node {
+          background-color: rgba(31, 41, 55, 0.7);
+          border: 1px solid rgba(75, 85, 99, 0.3);
+          border-radius: 0.5rem;
+          padding: 0.75rem;
+          transition: all 0.2s ease;
+          position: relative;
+          height: 100%;
+        }
+        .neural-node::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: radial-gradient(circle at center, var(--node-color) 0%, transparent 70%);
+          opacity: 0;
+          transition: opacity 0.3s ease;
+          z-index: -1;
+          border-radius: 0.5rem;
+        }
+        .neural-node:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+          border-color: var(--node-color);
+        }
+        .neural-node:hover::before {
+          opacity: 0.1;
+        }
+        .neural-node.active {
+          background-color: rgba(59, 130, 246, 0.15);
+          border-color: var(--node-color);
+          box-shadow: 0 0 15px rgba(var(--node-color), 0.3);
+        }
+        .neural-node.active::before {
+          opacity: 0.15;
+        }
+        .node-content {
+          display: flex;
+          flex-direction: column;
+          height: 100%;
+        }
+        .node-header {
+          margin-bottom: 0.5rem;
+        }
+        .node-title {
+          font-weight: 600;
+          color: white;
+          font-size: 0.875rem;
+          line-height: 1.25;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        .node-company {
+          font-size: 0.75rem;
+          color: #9ca3af;
+        }
+        .node-tech {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.25rem;
+          margin-top: auto;
+        }
+        .tech-tag {
+          font-size: 0.6875rem;
+          padding: 0.125rem 0.375rem;
+          background-color: rgba(59, 130, 246, 0.15);
+          color: #93c5fd;
+          border-radius: 0.25rem;
+          white-space: nowrap;
+        }
+        
+        /* AI Display Panel */
+        .ai-display-panel {
+          background-color: rgba(17, 24, 39, 0.7);
+          border: 1px solid rgba(55, 65, 81, 0.5);
+          border-radius: 0.5rem;
+          overflow: hidden;
+          backdrop-filter: blur(4px);
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+        }
+        .display-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 0.75rem 1rem;
+          border-bottom: 1px solid rgba(55, 65, 81, 0.5);
+          background-color: rgba(17, 24, 39, 0.7);
+        }
+        .status-indicator {
+          width: 8px;
+          height: 8px;
+          background-color: #10b981;
+          border-radius: 50%;
+          margin-right: 0.75rem;
+          position: relative;
+          box-shadow: 0 0 10px #10b981;
+          animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+          0% { opacity: 0.6; }
+          50% { opacity: 1; }
+          100% { opacity: 0.6; }
+        }
+        .expand-btn {
+          width: 24px;
+          height: 24px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background-color: rgba(37, 99, 235, 0.2);
+          color: #93c5fd;
+          border-radius: 4px;
+          transition: all 0.2s;
+        }
+        .expand-btn:hover {
+          background-color: rgba(37, 99, 235, 0.3);
+          transform: scale(1.05);
+        }
+        .display-content {
+          padding: 1rem;
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          overflow-y: auto;
+        }
+        .data-section {
+          margin-bottom: 1rem;
+        }
+        .data-header {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          font-size: 0.75rem;
+          text-transform: uppercase;
+          color: #9ca3af;
+          margin-bottom: 0.5rem;
+          letter-spacing: 0.05em;
+        }
+        .impact-list {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+        }
+        .impact-item {
+          display: flex;
+          align-items: flex-start;
+          font-size: 0.75rem;
+          color: #d1d5db;
+          margin-bottom: 0.25rem;
+          line-height: 1.4;
+        }
+        .impact-bullet {
+          width: 4px;
+          height: 4px;
+          background-color: #3b82f6;
+          border-radius: 50%;
+          margin-right: 0.5rem;
+          margin-top: 0.45rem;
+          flex-shrink: 0;
+        }
+        .tech-badge {
+          font-size: 0.6875rem;
+          padding: 0.125rem 0.375rem;
+          background-color: rgba(139, 92, 246, 0.15);
+          color: #c4b5fd;
+          border-radius: 0.25rem;
+          white-space: nowrap;
+        }
+        .project-navigation {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding-top: 0.75rem;
+          margin-top: auto;
+          border-top: 1px dashed rgba(75, 85, 99, 0.3);
+        }
+        .nav-button {
+          display: flex;
+          align-items: center;
+          gap: 0.25rem;
+          font-size: 0.75rem;
+          color: #9ca3af;
+          transition: color 0.2s;
+        }
+        .nav-button:hover {
+          color: white;
+        }
+        
+        /* Empty state */
+        .ai-empty-state {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          padding: 3rem 1rem;
+          background-color: rgba(17, 24, 39, 0.6);
+          border: 1px dashed rgba(75, 85, 99, 0.5);
+          border-radius: 0.5rem;
+          text-align: center;
+          max-width: 24rem;
+          margin: 0 auto;
+        }
+        .empty-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 60px;
+          height: 60px;
+          background-color: rgba(37, 99, 235, 0.1);
+          color: #93c5fd;
+          border-radius: 50%;
+          margin-bottom: 1rem;
+        }
+        .reset-btn {
+          padding: 0.5rem 1rem;
+          background-color: rgba(37, 99, 235, 0.2);
+          color: white;
+          border-radius: 0.25rem;
+          border: 1px solid rgba(59, 130, 246, 0.3);
+          transition: all 0.2s;
+        }
+        .reset-btn:hover {
+          background-color: rgba(37, 99, 235, 0.3);
+          border-color: rgba(59, 130, 246, 0.5);
+        }
+        
+        /* AI-themed Modal */
+        .ai-modal {
+          width: 100%;
+          max-width: 48rem;
+          max-height: 85vh;
+          background-color: rgba(17, 24, 39, 0.95);
+          border-radius: 0.75rem;
+          border: 1px solid rgba(55, 65, 81, 0.5);
+          overflow: hidden;
+          position: relative;
+          box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+          display: flex;
+          flex-direction: column;
+        }
+        .modal-design-elements {
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+          overflow: hidden;
+        }
+        .design-circle {
+          position: absolute;
+          border-radius: 50%;
+          opacity: 0.1;
+        }
+        .design-circle.left-top {
+          width: 300px;
+          height: 300px;
+          top: -150px;
+          left: -150px;
+          background: radial-gradient(circle, rgba(59, 130, 246, 0.5) 0%, transparent 70%);
+        }
+        .design-circle.right-bottom {
+          width: 250px;
+          height: 250px;
+          bottom: -125px;
+          right: -125px;
+          background: radial-gradient(circle, rgba(139, 92, 246, 0.5) 0%, transparent 70%);
+        }
+        .design-line {
+          position: absolute;
+          top: 0;
+          left: 30%;
+          width: 1px;
+          height: 100%;
+          background: linear-gradient(to bottom, transparent, rgba(59, 130, 246, 0.3), transparent);
+        }
+        .modal-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          padding: 1.25rem;
+          border-bottom: 1px solid rgba(55, 65, 81, 0.5);
+        }
+        .header-left {
+          display: flex;
+          flex-direction: column;
+        }
+        .modal-id {
+          font-size: 0.625rem;
+          color: #6b7280;
+          font-family: monospace;
+          margin-bottom: 0.25rem;
+        }
+        .modal-title {
+          font-size: 1.25rem;
+          font-weight: 700;
+          color: white;
+          margin-bottom: 0.25rem;
+        }
+        .modal-company {
+          font-size: 0.75rem;
+          color: #3b82f6;
+        }
+        .modal-close {
+          width: 28px;
+          height: 28px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background-color: rgba(55, 65, 81, 0.5);
+          color: #9ca3af;
+          border-radius: 6px;
+          transition: all 0.2s;
+        }
+        .modal-close:hover {
+          background-color: rgba(220, 38, 38, 0.3);
+          color: white;
+        }
+        .modal-content {
+          padding: 1.25rem;
+          flex: 1;
+          overflow-y: auto;
+        }
+        .modal-section {
+          margin-bottom: 1.25rem;
+        }
+        .section-title {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          font-size: 0.875rem;
+          font-weight: 600;
+          color: #93c5fd;
+          margin-bottom: 0.75rem;
+          letter-spacing: 0.025em;
+        }
+        .section-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 20px;
+          height: 20px;
+          background-color: rgba(37, 99, 235, 0.2);
+          border-radius: 4px;
+        }
+        .section-text {
+          font-size: 0.875rem;
+          color: #e5e7eb;
+          line-height: 1.6;
+        }
+        .modal-list {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+        }
+        .modal-list li {
+          display: flex;
+          align-items: flex-start;
+          font-size: 0.875rem;
+          color: #e5e7eb;
+          margin-bottom: 0.5rem;
+          line-height: 1.4;
+        }
+        .list-bullet {
+          width: 6px;
+          height: 6px;
+          background-color: #3b82f6;
+          border-radius: 50%;
+          margin-right: 0.75rem;
+          margin-top: 0.45rem;
+          flex-shrink: 0;
+        }
+        .modal-tech {
+          font-size: 0.75rem;
+          padding: 0.25rem 0.5rem;
+          background-color: rgba(139, 92, 246, 0.15);
+          color: #c4b5fd;
+          border-radius: 0.25rem;
+          white-space: nowrap;
+        }
+        .modal-footer {
+          display: flex;
+          justify-content: space-between;
+          padding: 0.75rem 1.25rem;
+          border-top: 1px solid rgba(55, 65, 81, 0.5);
+          background-color: rgba(17, 24, 39, 0.8);
+        }
+        .modal-nav-btn {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          font-size: 0.75rem;
+          color: #9ca3af;
+          padding: 0.375rem 0.75rem;
+          border-radius: 0.25rem;
+          transition: all 0.2s;
+        }
+        .modal-nav-btn:hover {
+          background-color: rgba(55, 65, 81, 0.5);
+          color: white;
+        }
+      `}</style>
     </section>
   );
 };
