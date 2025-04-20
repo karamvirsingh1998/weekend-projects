@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { BookOpen, ExternalLink, Filter, ArrowRight, Home, Search, Calendar, Clock, Award, Bookmark, ChevronRight } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { BookOpen, ExternalLink, Filter, ArrowRight, Home, Search, Calendar, Clock, Award, Bookmark, ChevronRight, X } from 'lucide-react';
 
-// Enhanced Knowledge Sharing Component with premium UI
 const KnowledgeSharing = () => {
   const [filter, setFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
-  const [activeItem, setActiveItem] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [showSearch, setShowSearch] = useState(false);
+  const canvasRef = useRef(null);
   
   // Combined data for all items
   const items = [
@@ -85,14 +85,6 @@ const KnowledgeSharing = () => {
     }
   ];
 
-  // Simulate loading effect
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, []);
-
   // Filter and search items
   const filteredItems = items
     .filter(item => filter === 'all' || item.type === filter)
@@ -103,309 +95,635 @@ const KnowledgeSharing = () => {
       item.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
     );
   
-  // Navigate to sections
-  const scrollToSection = (id) => {
-    const element = document.getElementById(id);
-    if (element) {
-      const headerHeight = document.querySelector('header')?.offsetHeight || 0;
-      const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
-      window.scrollTo({
-        top: elementPosition - headerHeight,
-        behavior: 'smooth'
-      });
-    }
-  };
-
-  // Type-specific styling with enhanced colors
+  // Type-specific styling
   const getTypeStyles = (type) => {
     switch(type) {
       case 'publication':
         return {
-          badge: 'bg-gradient-to-r from-blue-500 to-blue-700 text-white',
-          border: 'border-blue-500',
-          tag: 'bg-blue-900/30 text-blue-300 border border-blue-500/30',
-          icon: <BookOpen className="w-4 h-4 mr-1" />,
-          gradientFrom: 'from-blue-600',
-          gradientTo: 'to-blue-400'
+          color: '#3b82f6',
+          icon: <BookOpen className="w-5 h-5" />,
+          bgPattern: 'radial-gradient(circle, #3b82f620 1px, transparent 1px)',
+          label: 'Publication'
         };
       case 'blog':
         return {
-          badge: 'bg-gradient-to-r from-purple-500 to-purple-700 text-white',
-          border: 'border-purple-500',
-          tag: 'bg-purple-900/30 text-purple-300 border border-purple-500/30',
-          icon: <Bookmark className="w-4 h-4 mr-1" />,
-          gradientFrom: 'from-purple-600',
-          gradientTo: 'to-purple-400'
+          color: '#8b5cf6',
+          icon: <Bookmark className="w-5 h-5" />,
+          bgPattern: 'linear-gradient(45deg, #8b5cf610 25%, transparent 25%, transparent 50%, #8b5cf610 50%, #8b5cf610 75%, transparent 75%, transparent)',
+          label: 'Blog Post'
         };
       case 'course':
         return {
-          badge: 'bg-gradient-to-r from-green-500 to-green-700 text-white',
-          border: 'border-green-500',
-          tag: 'bg-green-900/30 text-green-300 border border-green-500/30',
-          icon: <Award className="w-4 h-4 mr-1" />,
-          gradientFrom: 'from-green-600',
-          gradientTo: 'to-green-400'
+          color: '#10b981',
+          icon: <Award className="w-5 h-5" />,
+          bgPattern: 'linear-gradient(90deg, #10b98110 1px, transparent 1px), linear-gradient(0deg, #10b98110 1px, transparent 1px)',
+          label: 'Certificate'
         };
       default:
         return {
-          badge: 'bg-gradient-to-r from-gray-600 to-gray-800 text-white',
-          border: 'border-gray-500',
-          tag: 'bg-gray-800 text-gray-300 border border-gray-600/30',
-          icon: <Bookmark className="w-4 h-4 mr-1" />,
-          gradientFrom: 'from-gray-600',
-          gradientTo: 'to-gray-400'
+          color: '#9ca3af',
+          icon: <Bookmark className="w-5 h-5" />,
+          bgPattern: 'none',
+          label: 'Resource'
         };
     }
   };
+  
+  // Draw connections animation
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
 
-  // Animation classes for items
-  const getAnimationClass = (index) => {
-    return `animate-fade-in opacity-0 animation-delay-${index * 100}`;
-  };
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    
+    // Animation variables
+    const particles = [];
+    const particleCount = 100;
+    
+    // Create particles
+    for (let i = 0; i < particleCount; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        radius: Math.random() * 1 + 0.5,
+        color: i % 3 === 0 ? '#3b82f6' : i % 3 === 1 ? '#8b5cf6' : '#10b981',
+        speedX: Math.random() * 0.5 - 0.25,
+        speedY: Math.random() * 0.5 - 0.25
+      });
+    }
+    
+    const draw = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Update and draw particles
+      particles.forEach(particle => {
+        // Update position
+        particle.x += particle.speedX;
+        particle.y += particle.speedY;
+        
+        // Boundary check
+        if (particle.x < 0 || particle.x > canvas.width) particle.speedX *= -1;
+        if (particle.y < 0 || particle.y > canvas.height) particle.speedY *= -1;
+        
+        // Draw particle
+        ctx.beginPath();
+        ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+        ctx.fillStyle = particle.color;
+        ctx.globalAlpha = 0.3;
+        ctx.fill();
+      });
+      
+      // Draw connections
+      ctx.globalAlpha = 0.1;
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 0.3;
+      
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          
+          if (distance < 100) {
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+      
+      requestAnimationFrame(draw);
+    };
+    
+    const animFrame = requestAnimationFrame(draw);
+    
+    // Handle window resize
+    const handleResize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    
+    window.addEventListener('resize', handleResize);
+    
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      cancelAnimationFrame(animFrame);
+    };
+  }, []);
 
   return (
-    <section id="publications" className="py-24 bg-gradient-to-b from-gray-900 via-gray-900 to-black">
-      <div className="container mx-auto px-4 sm:px-6">
-        <div className="max-w-6xl mx-auto">
-          {/* Enhanced Header with 3D effect */}
-          <div className="mb-16 text-center relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-3xl blur-3xl"></div>
-            
-            <div className="relative z-10">
-              <div className="flex items-center justify-center gap-4 mb-6">
-                {/* Improved Home Button with hover effect */}
-                <button
-                  onClick={() => scrollToSection('hero')}
-                  className="p-3 rounded-full bg-gray-800/80 hover:bg-gray-700 border border-gray-700/50 transition-all duration-300 hover:scale-110 backdrop-blur-sm shadow-lg group"
-                  aria-label="Back to home"
-                >
-                  <Home className="w-5 h-5 text-gray-300 group-hover:text-white transition-colors" />
-                </button>
-                
-                <h2 className="text-4xl sm:text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-pink-500 inline-block drop-shadow-2xl">
-                  Knowledge Sharing
-                </h2>
-              </div>
+    <section id="publications" className="py-12 bg-gray-900 relative overflow-hidden">
+      {/* Animated neural network background */}
+      <div className="absolute inset-0 opacity-30">
+        <canvas ref={canvasRef} className="w-full h-full"></canvas>
+      </div>
+      
+      {/* Gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-gray-900 via-gray-900/95 to-gray-900/90"></div>
+      
+      <div className="container relative z-10 mx-auto px-4">
+        {/* Compact header */}
+        <div className="mb-8 text-center">
+          <h2 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-pink-500">
+            Knowledge Base
+          </h2>
+          <div className="w-20 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 mx-auto mt-2"></div>
+        </div>
+
+        {/* Filter & Search */}
+        <div className="flex justify-between items-center mb-6 pb-2 border-b border-gray-800">
+          <div className="flex items-center gap-2 overflow-x-auto hide-scrollbar">
+            {['all', 'publication', 'blog', 'course'].map((type) => {
+              const isActive = filter === type;
+              const styles = type !== 'all' ? getTypeStyles(type) : {
+                color: '#6366f1',
+                icon: <Filter className="w-5 h-5" />,
+                label: 'All'
+              };
               
-              <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-                Research publications, blog posts, and professional certifications that showcase my expertise in AI engineering.
-              </p>
-              <div className="w-32 h-1.5 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-500 mx-auto mt-8 rounded-full shadow-glow"></div>
-            </div>
-          </div>
-
-          {/* Enhanced Search and Filter Container */}
-          <div className="mb-12 relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-600/5 to-purple-600/5 rounded-xl blur-lg"></div>
-            <div className="relative bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 border border-gray-700/50 shadow-xl">
-              {/* Search input */}
-              <div className="flex flex-col md:flex-row gap-4 items-center">
-                <div className="relative w-full md:w-2/3">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Search className="h-5 w-5 text-gray-400" />
+              return (
+                <button
+                  key={type}
+                  onClick={() => setFilter(type)}
+                  className={`filter-btn ${isActive ? 'active' : ''}`}
+                  style={{ '--color': styles.color }}
+                >
+                  <div className="filter-icon" style={{ backgroundColor: `${styles.color}20` }}>
+                    {styles.icon}
                   </div>
-                  <input 
-                    type="text" 
-                    placeholder="Search by title, description, or tags..." 
-                    className="block w-full pl-10 pr-4 py-3 bg-gray-900/70 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-300 placeholder-gray-500 transition-all"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-                </div>
-                
-                {/* Filter Pills with improved design */}
-                <div className="flex flex-wrap justify-center md:justify-end gap-2 w-full md:w-1/3">
-                  {['all', 'publication', 'blog', 'course'].map((type) => (
-                    <button
-                      key={type}
-                      onClick={() => setFilter(type)}
-                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
-                        filter === type
-                          ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-glow-sm scale-105'
-                          : 'bg-gray-800 text-gray-300 hover:bg-gray-700 border border-gray-700/50'
-                      }`}
-                    >
-                      {type === 'all' ? 'All' : `${type.charAt(0).toUpperCase() + type.slice(1)}s`}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
+                  <span>{styles.label}</span>
+                </button>
+              );
+            })}
           </div>
-
-          {/* Loading state */}
-          {isLoading ? (
-            <div className="flex justify-center items-center h-64">
-              <div className="loader"></div>
+          
+          {showSearch ? (
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-48 pl-9 pr-9 py-2 rounded-full bg-gray-800 border border-gray-700 focus:ring-2 focus:ring-blue-500 text-gray-300"
+                autoFocus
+              />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <button
+                onClick={() => {
+                  setSearchTerm('');
+                  setShowSearch(false);
+                }}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+              >
+                <X size={16} />
+              </button>
             </div>
           ) : (
-            <>
-              {/* Results count */}
-              <div className="mb-6 text-gray-400 font-medium">
-                Showing {filteredItems.length} {filteredItems.length === 1 ? 'result' : 'results'}
-                {filter !== 'all' && ` in ${filter}s`}
-                {searchTerm && ` for "${searchTerm}"`}
-              </div>
-
-              {/* Enhanced Knowledge Items Grid */}
-              {filteredItems.length === 0 ? (
-                <div className="bg-gray-800/30 rounded-xl p-10 text-center border border-gray-700/50">
-                  <p className="text-gray-400 text-lg">No items found matching your criteria. Try adjusting your search or filters.</p>
-                </div>
-              ) : (
-                <div className="grid gap-8 grid-cols-1">
-                  {filteredItems.map((item, index) => {
-                    const styles = getTypeStyles(item.type);
-                    
-                    return (
-                      <div 
-                        key={item.id}
-                        className={`group bg-gray-800/40 backdrop-blur-sm rounded-xl overflow-hidden border border-gray-700/50 hover:border-opacity-100 transition-all duration-500 shadow-xl hover:shadow-2xl hover:shadow-${styles.gradientFrom}/10 ${getAnimationClass(index)}`}
-                        onMouseEnter={() => setActiveItem(item.id)}
-                        onMouseLeave={() => setActiveItem(null)}
-                      >
-                        <div className="md:flex relative">
-                          {/* Gradient overlay on hover */}
-                          <div className={`absolute inset-0 bg-gradient-to-r ${styles.gradientFrom} ${styles.gradientTo} opacity-0 group-hover:opacity-5 transition-opacity duration-500`}></div>
-                          
-                          {/* Image container with enhanced styling */}
-                          <div className="md:w-1/3 lg:w-1/4 h-60 md:h-auto overflow-hidden relative">
-                            <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent z-10"></div>
-                            <img
-                              src={item.image}
-                              alt={item.title}
-                              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                              onError={(e) => {
-                                e.target.onerror = null;
-                                e.target.src = `https://via.placeholder.com/400x400?text=${item.type}`;
-                              }}
-                            />
-                            {/* Enhanced Type Badge */}
-                            <div className="absolute top-4 left-4 z-20">
-                              <span className={`px-4 py-1.5 rounded-lg text-sm font-medium ${styles.badge} shadow-lg flex items-center`}>
-                                {styles.icon}
-                                {item.type.charAt(0).toUpperCase() + item.type.slice(1)}
-                              </span>
-                            </div>
-                          </div>
-
-                          <div className="md:w-2/3 lg:w-3/4 p-6 md:p-8 relative">
-                            <div className="flex flex-col justify-between h-full">
-                              <div>
-                                <div className="mb-4">
-                                  <h3 className="text-xl md:text-2xl font-bold text-white group-hover:text-blue-300 transition-colors duration-300">{item.title}</h3>
-                                  
-                                  {/* Source and date with icons */}
-                                  <div className="flex flex-wrap items-center gap-4 text-gray-400 text-sm mt-2">
-                                    <span className="flex items-center">
-                                      <BookOpen className="w-4 h-4 mr-1" />
-                                      {item.source}
-                                    </span>
-                                    <span className="flex items-center">
-                                      <Calendar className="w-4 h-4 mr-1" />
-                                      {item.date}
-                                    </span>
-                                    {item.readTime && (
-                                      <span className="flex items-center">
-                                        <Clock className="w-4 h-4 mr-1" />
-                                        {item.readTime}
-                                      </span>
-                                    )}
-                                  </div>
-                                </div>
-
-                                <p className="text-gray-300 mb-6 line-clamp-3 group-hover:line-clamp-none transition-all duration-300">{item.description}</p>
-
-                                {/* Enhanced Tags */}
-                                <div className="flex flex-wrap gap-2 mb-6">
-                                  {item.tags.map(tag => (
-                                    <span
-                                      key={tag}
-                                      className={`px-3 py-1 rounded-lg text-xs font-medium ${styles.tag} transition-all duration-300 hover:scale-105`}
-                                    >
-                                      {tag}
-                                    </span>
-                                  ))}
-                                </div>
-                              </div>
-
-                              {/* Enhanced Link Button */}
-                              <a
-                                href={item.link}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className={`inline-flex items-center px-4 py-2 rounded-lg bg-gray-900/80 hover:bg-gradient-to-r ${styles.gradientFrom} ${styles.gradientTo} text-gray-300 hover:text-white transition-all duration-300 text-sm font-medium border border-gray-700 group-hover:border-opacity-0 group-hover:shadow-lg`}
-                              >
-                                {item.type === 'publication' ? 'Read Publication' : 
-                                item.type === 'blog' ? 'Read on Medium' : 'View Certificate'}
-                                <ChevronRight size={16} className="ml-2 transition-transform duration-300 transform group-hover:translate-x-1" />
-                              </a>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </>
-          )}
-
-          {/* Enhanced Call-to-action */}
-          <div className="mt-16 flex justify-center">
-            <a
-              href="https://medium.com/@karamvirhapal"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white rounded-lg transition-all duration-300 hover:shadow-glow hover:scale-105 font-medium text-base relative overflow-hidden group"
+            <button
+              onClick={() => setShowSearch(true)}
+              className="p-2 rounded-full hover:bg-gray-800"
             >
-              <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 opacity-0 group-hover:opacity-90 transition-opacity duration-500 transform translate-x-full group-hover:translate-x-0"></span>
-              <span className="relative z-10 flex items-center">
-                View More Content
-                <ArrowRight size={18} className="ml-2 group-hover:translate-x-1 transition-transform duration-300" />
-              </span>
-            </a>
+              <Search className="h-5 w-5 text-gray-400" />
+            </button>
+          )}
+        </div>
+
+        {/* Visual card grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredItems.map((item) => {
+            const styles = getTypeStyles(item.type);
+            const isSelected = selectedItem === item.id;
+            
+            return (
+              <div
+                key={item.id}
+                className={`knowledge-card group ${isSelected ? 'selected' : ''}`}
+                style={{ '--card-color': styles.color }}
+                onClick={() => setSelectedItem(isSelected ? null : item.id)}
+              >
+                {/* Card top with image and overlay */}
+                <div className="card-image-container">
+                  <div className="card-image-overlay" style={{ backgroundColor: styles.color }}></div>
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    className="card-image"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = `https://via.placeholder.com/400x200?text=${item.type}`;
+                    }}
+                  />
+                  
+                  {/* Type indicator */}
+                  <div className="card-badge" style={{ backgroundColor: styles.color }}>
+                    {styles.icon}
+                    <span className="card-badge-text">{styles.label}</span>
+                  </div>
+                </div>
+                
+                {/* Card content */}
+                <div className="card-content">
+                  <h3 className="card-title">{item.title}</h3>
+                  
+                  <div className="card-meta">
+                    <span>{item.source}</span>
+                    <span className="meta-divider">•</span>
+                    <span>{item.date}</span>
+                    {item.readTime && (
+                      <>
+                        <span className="meta-divider">•</span>
+                        <span>{item.readTime}</span>
+                      </>
+                    )}
+                  </div>
+                  
+                  {/* Description - only shown when selected */}
+                  <div className={`card-description ${isSelected ? 'expanded' : ''}`}>
+                    <p>{item.description}</p>
+                    
+                    {/* Tags */}
+                    <div className="card-tags">
+                      {item.tags.map(tag => (
+                        <span 
+                          key={tag} 
+                          className="card-tag"
+                          style={{ 
+                            backgroundColor: `${styles.color}15`,
+                            color: styles.color,
+                            borderColor: `${styles.color}30`
+                          }}
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                    
+                    {/* View button */}
+                    <a
+                      href={item.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="card-button"
+                      onClick={(e) => e.stopPropagation()}
+                      style={{ 
+                        backgroundColor: styles.color,
+                        boxShadow: `0 4px 14px ${styles.color}40`
+                      }}
+                    >
+                      <span>View {item.type}</span>
+                      <ExternalLink size={16} />
+                    </a>
+                  </div>
+                </div>
+                
+                {/* Expand indicator */}
+                <div className="card-expand-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19 9L12 16L5 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        
+        {/* Empty state */}
+        {filteredItems.length === 0 && (
+          <div className="empty-state">
+            <div className="empty-icon">
+              <Search className="w-8 h-8 text-gray-600" />
+            </div>
+            <h3>No results found</h3>
+            <p>Try adjusting your search or filters</p>
+            <button
+              onClick={() => {
+                setFilter('all');
+                setSearchTerm('');
+                setShowSearch(false);
+              }}
+            >
+              Reset filters
+            </button>
           </div>
+        )}
+        
+        {/* View more link */}
+        <div className="text-center mt-8">
+          <a
+            href="https://medium.com/@karamvirhapal"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="view-more-link"
+          >
+            <span>View more on Medium</span>
+            <ArrowRight size={16} />
+          </a>
         </div>
       </div>
 
-      {/* Add global styles for animations */}
-      <style jsx global>{`
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
+      {/* Custom styles */}
+      <style jsx>{`
+        .hide-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+          display: none;
         }
         
-        .animate-fade-in {
-          animation: fadeIn 0.6s ease-out forwards;
+        /* Filter buttons */
+        .filter-btn {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 6px 10px;
+          border-radius: 12px;
+          background-color: rgba(31, 41, 55, 0.4);
+          color: #e5e7eb;
+          transition: all 0.3s ease;
+          position: relative;
         }
         
-        .animation-delay-100 { animation-delay: 0.1s; }
-        .animation-delay-200 { animation-delay: 0.2s; }
-        .animation-delay-300 { animation-delay: 0.3s; }
-        .animation-delay-400 { animation-delay: 0.4s; }
-        .animation-delay-500 { animation-delay: 0.5s; }
-        
-        .shadow-glow {
-          box-shadow: 0 0 20px rgba(96, 165, 250, 0.5);
+        .filter-btn::after {
+          content: '';
+          position: absolute;
+          bottom: -2px;
+          left: 0;
+          width: 0;
+          height: 2px;
+          background-color: var(--color);
+          transition: width 0.3s ease;
         }
         
-        .shadow-glow-sm {
-          box-shadow: 0 0 10px rgba(96, 165, 250, 0.3);
+        .filter-btn:hover::after {
+          width: 100%;
         }
         
-        .loader {
-          border: 4px solid rgba(96, 165, 250, 0.1);
+        .filter-btn.active {
+          background-color: rgba(var(--color), 0.1);
+          color: white;
+        }
+        
+        .filter-btn.active::after {
+          width: 100%;
+        }
+        
+        .filter-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 32px;
+          height: 32px;
+          border-radius: 8px;
+          color: var(--color);
+        }
+        
+        /* Knowledge cards */
+        .knowledge-card {
+          position: relative;
+          border-radius: 16px;
+          background-color: rgba(31, 41, 55, 0.6);
+          overflow: hidden;
+          transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+          cursor: pointer;
+          border: 1px solid rgba(75, 85, 99, 0.3);
+          height: 260px;
+        }
+        
+        .knowledge-card.selected {
+          height: 480px;
+          border-color: var(--card-color);
+          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1), 0 0 15px rgba(var(--card-color), 0.1);
+        }
+        
+        .knowledge-card:hover {
+          transform: translateY(-5px);
+          border-color: var(--card-color);
+        }
+        
+        .card-image-container {
+          position: relative;
+          height: 140px;
+          overflow: hidden;
+        }
+        
+        .card-image {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          transition: transform 0.5s ease;
+        }
+        
+        .knowledge-card:hover .card-image {
+          transform: scale(1.05);
+        }
+        
+        .card-image-overlay {
+          position: absolute;
+          inset: 0;
+          background-color: var(--card-color);
+          opacity: 0.2;
+          transition: opacity 0.3s ease;
+        }
+        
+        .knowledge-card:hover .card-image-overlay {
+          opacity: 0.3;
+        }
+        
+        .card-badge {
+          position: absolute;
+          top: 12px;
+          left: 12px;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          padding: 6px 12px;
+          border-radius: 12px;
+          color: white;
+          font-weight: 500;
+          font-size: 14px;
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-badge-text {
+          display: none;
+          opacity: 0;
+          transform: translateX(-10px);
+          transition: all 0.3s ease;
+        }
+        
+        .knowledge-card:hover .card-badge-text {
+          display: inline;
+          opacity: 1;
+          transform: translateX(0);
+        }
+        
+        .card-content {
+          padding: 16px;
+        }
+        
+        .card-title {
+          font-size: 16px;
+          font-weight: 600;
+          color: white;
+          margin-bottom: 8px;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+          line-height: 1.4;
+          transition: color 0.3s ease;
+        }
+        
+        .knowledge-card:hover .card-title {
+          color: var(--card-color);
+        }
+        
+        .card-meta {
+          display: flex;
+          align-items: center;
+          flex-wrap: wrap;
+          gap: 6px;
+          font-size: 12px;
+          color: #9ca3af;
+        }
+        
+        .meta-divider {
+          color: #4b5563;
+        }
+        
+        .card-description {
+          margin-top: 16px;
+          height: 0;
+          opacity: 0;
+          overflow: hidden;
+          transition: all 0.4s ease;
+        }
+        
+        .card-description.expanded {
+          height: auto;
+          opacity: 1;
+        }
+        
+        .card-description p {
+          font-size: 14px;
+          color: #d1d5db;
+          margin-bottom: 16px;
+          line-height: 1.6;
+        }
+        
+        .card-tags {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 6px;
+          margin-bottom: 20px;
+        }
+        
+        .card-tag {
+          font-size: 12px;
+          padding: 4px 8px;
+          border-radius: 6px;
+          border: 1px solid;
+        }
+        
+        .card-button {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          width: 100%;
+          padding: 10px;
+          border-radius: 8px;
+          color: white;
+          font-weight: 500;
+          transition: all 0.3s ease;
+        }
+        
+        .card-button:hover {
+          transform: translateY(-2px);
+        }
+        
+        .card-expand-icon {
+          position: absolute;
+          bottom: 8px;
+          left: 50%;
+          transform: translateX(-50%) rotate(0deg);
+          color: #9ca3af;
+          transition: all 0.3s ease;
+        }
+        
+        .knowledge-card.selected .card-expand-icon {
+          transform: translateX(-50%) rotate(180deg);
+        }
+        
+        /* Empty state */
+        .empty-state {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          padding: 48px;
+          text-align: center;
+          background-color: rgba(31, 41, 55, 0.4);
+          border-radius: 16px;
+          border: 1px dashed rgba(75, 85, 99, 0.5);
+        }
+        
+        .empty-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 64px;
+          height: 64px;
+          background-color: rgba(55, 65, 81, 0.5);
           border-radius: 50%;
-          border-top: 4px solid rgba(96, 165, 250, 0.8);
-          width: 40px;
-          height: 40px;
-          animation: spin 1s linear infinite;
+          margin-bottom: 16px;
         }
         
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
+        .empty-state h3 {
+          font-size: 18px;
+          font-weight: 600;
+          color: white;
+          margin-bottom: 8px;
+        }
+        
+        .empty-state p {
+          color: #9ca3af;
+          margin-bottom: 20px;
+        }
+        
+        .empty-state button {
+          padding: 8px 16px;
+          border-radius: 8px;
+          background-color: rgba(59, 130, 246, 0.2);
+          color: #60a5fa;
+          border: 1px solid rgba(59, 130, 246, 0.3);
+          transition: all 0.3s ease;
+        }
+        
+        .empty-state button:hover {
+          background-color: rgba(59, 130, 246, 0.3);
+        }
+        
+        /* View more link */
+        .view-more-link {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          padding: 8px 16px;
+          background-color: rgba(59, 130, 246, 0.1);
+          color: #60a5fa;
+          border-radius: 8px;
+          border: 1px solid rgba(59, 130, 246, 0.2);
+          transition: all 0.3s ease;
+        }
+        
+        .view-more-link:hover {
+          background-color: rgba(59, 130, 246, 0.2);
+          transform: translateY(-2px);
         }
       `}</style>
     </section>
