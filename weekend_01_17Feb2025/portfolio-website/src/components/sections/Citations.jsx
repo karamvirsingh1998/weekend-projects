@@ -2,6 +2,15 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Home, Linkedin, ExternalLink, X, Zap, Briefcase, Award, MessageCircle } from 'lucide-react';
 
 const Citations = () => {
+  // This variable controls the quote styling - ADDED
+  const quoteStyle = {
+    fontSize: '1.1rem',
+    lineHeight: '1.6',
+    fontFamily: '"Georgia", serif', // More elegant font for quotes
+    color: '#f0f0ff', // Slightly blue-tinted white
+    fontStyle: 'italic',
+    textShadow: '0 1px 2px rgba(0,0,0,0.2)' // Subtle shadow for better readability
+  };
   // States
   const [selectedImage, setSelectedImage] = useState(null);
   const [activeTestimonial, setActiveTestimonial] = useState(null);
@@ -30,7 +39,7 @@ const Citations = () => {
       name: 'Pavitar Singh',
       role: 'Founder and CEO (Unifyapps) , Ex-CTO (Sprinklr)',
       linkedIn: 'http://linkedin.com/in/pavitar/',
-      company: 'UnifyApps',
+      company: 'Unifyapps',
       previousCompany: 'Sprinklr',
       tags: ['leadership', 'ai-strategy', 'engineering'],
       highlightQuote: "I had worked with Karamvir during his tenure as Lead AI Engineer at UnifyApps. While I didn't manage Karamvir directly, I witnessed how he played a key role in driving forward our AI initiatives and turning strategic ideas into tangible results. His ability to understand and execute the company's broader vision was invaluable.Karamvir demonstrated exceptional technical expertise and a talent for solving complex problems. He was instrumental in developing innovative AI solutions that aligned seamlessly with our business goals. His dedication, collaborative spirit, and proactive approach made him a critical part of our success, helping to push the boundaries of what we could achieve with AI.I have no doubt that Karamvir will continue to thrive and deliver impactful results in any future endeavor. He would be a tremendous asset to any team",
@@ -217,7 +226,7 @@ const Citations = () => {
           : -1;
         const nextIndex = (currentIndex + 1) % filteredCitations.length;
         handleSelectTestimonial(filteredCitations[nextIndex]);
-      },5000); // Change testimonial every 8 seconds
+      }, 8000); // Change testimonial every 8 seconds
       return () => clearTimeout(timer);
     }
   }, [activeTestimonial, filteredCitations, isQuoteAnimating]);
@@ -228,53 +237,53 @@ const Citations = () => {
   }, [filterTag]);
 
   return (
-    <section id="testimonials" className="py-32 bg-gradient-to-b from-gray-900 to-gray-800 relative overflow-hidden">
+    <section id="testimonials" className="py-16 bg-gradient-to-b from-gray-900 to-gray-800 relative overflow-hidden">
       {/* Background with subtle network pattern */}
       <div className="absolute inset-0 z-0 opacity-10">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzRjMC0yLjIxLTEuNzktNC00LTRzLTQgMS43OS00IDRjMCAyLjIxIDEuNzkgNCA0IDRzNC0xLjc5IDQtNHptMjAgMGMwLTIuMjEtMS43OS00LTQtNHMtNCAxLjc5LTQgNGMwIDIuMjEgMS43OSA0IDQgNHM0LTEuNzkgNC00em0tNDAgMGMwLTIuMjEtMS43OS00LTQtNHMtNCAxLjc5LTQgNGMwIDIuMjEgMS43OSA0IDQgNHM0LTEuNzkgNC00em0yMC0yMGMwLTIuMjEtMS43OS00LTQtNHMtNCAxLjc5LTQgNGMwIDIuMjEgMS43OSA0IDQgNHM0LTEuNzkgNC00em0yMCAwYzAtMi4yMS0xLjc5LTQtNC00cy00IDEuNzktNCA0YzAgMi4yMSAxLjc5IDQgNCA0czQtMS43OSA0LTR6bS00MCAwYzAtMi4yMS0xLjc5LTQtNC00cy00IDEuNzktNCA0YzAgMi4yMSAxLjc5IDQgNCA0czQtMS43OSA0LTR6Ii8+PC9nPjwvZz48L3N2Zz4=')]"></div>
-        <div className="absolute top-0 left-0 right-0 h-64 bg-gradient-to-b from-blue-500/10 to-transparent"></div>
-        <div className="absolute bottom-0 left-0 right-0 h-64 bg-gradient-to-t from-purple-500/10 to-transparent"></div>
+        <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-blue-500/10 to-transparent"></div>
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-purple-500/10 to-transparent"></div>
       </div>
 
-      <div className="container mx-auto px-6 sm:px-10 relative z-10">
-        {/* Section header with animated gradient */}
-        <div className="text-center mb-16">
-          <h2 className="text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500 inline-block mb-6 gradient-animate">
+      <div className="container mx-auto px-4 sm:px-6 relative z-10">
+        {/* Section header with animated gradient - REDUCED SIZE */}
+        <div className="text-center mb-8">
+          <h2 className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500 inline-block mb-3 gradient-animate">
             Testimonials
           </h2>
-          <p className="text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
+          <p className="text-lg text-gray-300 max-w-3xl mx-auto leading-relaxed">
             Endorsements from professionals who have experienced the impact of my work
           </p>
-          <div className="w-40 h-2 bg-gradient-to-r from-blue-400 to-purple-500 mx-auto mt-8 rounded-full glow-line"></div>
+          <div className="w-32 h-1 bg-gradient-to-r from-blue-400 to-purple-500 mx-auto mt-4 rounded-full glow-line"></div>
         </div>
 
-        {/* Tag filters with visual design */}
-        <div className="flex justify-center flex-wrap gap-2 mb-16">
+        {/* Tag filters - MADE MORE COMPACT */}
+        <div className="flex justify-center flex-wrap gap-1 mb-5 mt-1">
           {allTags.map(tag => (
             <button 
               key={tag}
               onClick={() => setFilterTag(tag)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+              className={`px-2 py-1 rounded-full text-xs font-medium transition-all duration-300 ${
                 filterTag === tag 
-                  ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg shadow-purple-500/20 scale-105' 
-                  : 'bg-gray-800/70 text-gray-300 hover:bg-gray-700'
+                  ? 'bg-[#6366f1] text-white' 
+                  : 'bg-gray-800/60 text-gray-300 hover:bg-gray-700'
               }`}
             >
-              {tag === 'all' ? 'All Testimonials' : tag.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+              {tag === 'all' ? 'All' : tag.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
             </button>
           ))}
         </div>
 
         {/* Main content with quote and grid layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-          {/* Animated quote section */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Animated quote section - INCREASED VERTICAL HEIGHT ONLY */}
           <div className="lg:col-span-1 order-2 lg:order-1" ref={quoteRef}>
-            <div className="sticky top-24">
+            <div className="sticky top-20">
               <div className={`quote-container ${activeTestimonial ? 'has-quote' : ''}`}>
                 {activeTestimonial && (
                   <div className="quote-content">
                     <div className="quote-mark top-mark">❝</div>
-                    <p className="quote-text">{activeTestimonial.highlightQuote}</p>
+                    <p className="quote-text" style={quoteStyle}>{activeTestimonial.highlightQuote}</p>
                     <div className="quote-mark bottom-mark">❞</div>
                     
                     <div className="citation-details">
@@ -285,7 +294,7 @@ const Citations = () => {
                           className="avatar-image"
                           onError={(e) => {
                             e.target.onerror = null;
-                            e.target.src = 'https://via.placeholder.com/100?text=Profile';
+                            e.target.src = 'https://via.placeholder.com/60?text=Profile';
                           }}
                         />
                       </div>
@@ -307,25 +316,17 @@ const Citations = () => {
                           rel="noopener noreferrer"
                           className="linkedin-link"
                         >
-                          <Linkedin size={14} className="mr-1" />
+                          <Linkedin size={12} className="mr-1" />
                           <span>View Profile</span>
                         </a>
                       </div>
-                    </div>
-                    
-                    <div className="tags-container">
-                      {activeTestimonial.tags.map(tag => (
-                        <span key={tag} className="tag">
-                          {tag.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
-                        </span>
-                      ))}
                     </div>
                   </div>
                 )}
                 
                 {!activeTestimonial && (
                   <div className="empty-quote">
-                    <MessageCircle size={40} className="text-gray-600 mb-3" />
+                    <MessageCircle size={30} className="text-gray-600 mb-2" />
                     <p>Loading testimonials...</p>
                   </div>
                 )}
@@ -333,9 +334,9 @@ const Citations = () => {
             </div>
           </div>
           
-          {/* Image grid layout */}
+          {/* Image grid layout - KEPT ORIGINAL WIDTH */}
           <div className="lg:col-span-2 order-1 lg:order-2">
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
               {filteredCitations.map((citation) => (
                 <div 
                   key={citation.id}
@@ -349,16 +350,16 @@ const Citations = () => {
                       className="testimonial-image"
                       onError={(e) => {
                         e.target.onerror = null;
-                        e.target.src = 'https://via.placeholder.com/300?text=Profile';
+                        e.target.src = 'https://via.placeholder.com/150?text=Profile';
                       }}
                     />
                     
                     <div className="image-overlay">
                       <div className="overlay-content">
                         <div className="overlay-icon">
-                          <MessageCircle size={24} />
+                          <MessageCircle size={16} />
                         </div>
-                        <p className="overlay-text">View Quote</p>
+                        <p className="overlay-text">View</p>
                       </div>
                     </div>
                   </div>
@@ -368,19 +369,6 @@ const Citations = () => {
                     <p className="card-role">{citation.company}</p>
                     
                     <div className="card-actions">
-                      <button 
-                        className="view-full-btn"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          openImageModal(citation);
-                        }}
-                      >
-                        <span className="sr-only">View Full Testimonial</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m4-3H7" />
-                        </svg>
-                      </button>
-                      
                       <a
                         href={citation.linkedIn}
                         target="_blank"
@@ -389,7 +377,7 @@ const Citations = () => {
                         onClick={(e) => e.stopPropagation()}
                       >
                         <span className="sr-only">LinkedIn Profile</span>
-                        <Linkedin size={14} />
+                        <Linkedin size={12} />
                       </a>
                     </div>
                   </div>
@@ -417,11 +405,11 @@ const Citations = () => {
           </div>
         </div>
         
-        {/* Statistics section */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-20">
+        {/* Statistics section - MADE COMPACT */}
+        <div className="grid grid-cols-3 gap-4 mt-8">
           <div className="stat-card">
             <div className="stat-icon">
-              <Award size={24} />
+              <Award size={18} />
             </div>
             <div className="stat-value">{citations.length}</div>
             <div className="stat-label">Endorsements</div>
@@ -429,7 +417,7 @@ const Citations = () => {
           
           <div className="stat-card">
             <div className="stat-icon">
-              <Briefcase size={24} />
+              <Briefcase size={18} />
             </div>
             <div className="stat-value">{[...new Set(citations.map(c => c.company))].length}</div>
             <div className="stat-label">Companies</div>
@@ -437,7 +425,7 @@ const Citations = () => {
           
           <div className="stat-card">
             <div className="stat-icon">
-              <Zap size={24} />
+              <Zap size={18} />
             </div>
             <div className="stat-value">{allTags.length - 1}</div>
             <div className="stat-label">Skill Areas</div>
@@ -445,83 +433,178 @@ const Citations = () => {
         </div>
       </div>
 
-      {/* Enhanced Image Modal with quote and auto-expansion functionality */}
+      {/* Enhanced Image Modal with quote - REDESIGNED TO MATCH SCREENSHOT */}
       {selectedImage && (
         <div
           id="imageModal"
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md modal-container"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-[#111827] modal-container"
           onClick={handleModalClick}
         >
-          <div className="relative max-w-5xl w-full bg-gray-900 rounded-xl overflow-hidden shadow-2xl modal-content">
+          <div className="relative max-w-6xl w-full h-full bg-[#111827] overflow-hidden modal-content flex flex-col">
             {/* Close button */}
             <button
               onClick={closeImageModal}
-              className="absolute top-4 right-4 z-10 bg-gray-800/80 p-2 rounded-full text-white hover:bg-red-600 transition-colors duration-300"
+              className="absolute top-4 right-4 z-20 bg-transparent p-2 text-white hover:text-gray-300 transition-colors duration-300"
               aria-label="Close"
             >
-              <X size={24} />
+              <X size={28} />
             </button>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
-              {/* Modal image */}
-              <div className="modal-image-container">
-                <img
-                  src={selectedImage.image}
-                  alt={`Testimonial from ${selectedImage.name}`}
-                  className="w-full h-auto"
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = 'https://via.placeholder.com/800x600?text=Unable+to+Load+Image';
+            {/* Header with name and role */}
+            <div className="p-8 pb-4">
+              <h2 className="text-3xl font-bold text-white mb-2">{selectedImage.name}</h2>
+              <p className="text-gray-300 text-xl">{selectedImage.role}</p>
+              
+              {/* Company badges */}
+              <div className="flex flex-wrap gap-2 mt-4">
+                <span className="px-3 py-1 bg-[#1d2c4d] text-[#6b8acd] rounded-full text-sm">
+                  {selectedImage.company}
+                </span>
+                {selectedImage.previousCompany && (
+                  <span className="px-3 py-1 bg-[#2d204c] text-[#a989e7] rounded-full text-sm">
+                    Ex-{selectedImage.previousCompany}
+                  </span>
+                )}
+              </div>
+            </div>
+
+            <div className="flex flex-col md:flex-row px-8 py-4 flex-grow overflow-hidden">
+              {/* Left side - LinkedIn post image (clickable to expand) */}
+              <div className="w-full md:w-1/2 p-2 flex items-start">
+                <div 
+                  className="linkedin-post-container cursor-zoom-in"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    // Toggle full-screen image view
+                    const container = e.currentTarget;
+                    container.classList.toggle('fullscreen');
                   }}
-                />
+                >
+                  <img
+                    src={selectedImage.image}
+                    alt={`Testimonial from ${selectedImage.name}`}
+                    className="w-full h-auto rounded-lg shadow-lg border border-gray-700"
+                  />
+                </div>
               </div>
               
-              {/* Modal quote */}
-              <div className="modal-quote-container">
-                <div className="modal-quote-content">
-                  <h3 className="modal-quote-name">{selectedImage.name}</h3>
-                  <p className="modal-quote-role">{selectedImage.role}</p>
-                  
-                  <div className="modal-quote-company">
-                    <span className="company-badge">{selectedImage.company}</span>
-                    {selectedImage.previousCompany && (
-                      <span className="prev-company-badge">Ex-{selectedImage.previousCompany}</span>
-                    )}
-                  </div>
-                  
-                  <div className="modal-quote-text">
-                    <div className="quote-mark top-mark">❝</div>
-                    <p>{selectedImage.highlightQuote}</p>
-                    <div className="quote-mark bottom-mark">❞</div>
-                  </div>
-                  
-                  <div className="modal-quote-footer">
-                    <a
-                      href={selectedImage.linkedIn}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="modal-linkedin-link"
-                    >
-                      <Linkedin size={18} className="mr-2" />
-                      <span>View LinkedIn Profile</span>
-                    </a>
-                    
-                    <div className="modal-tags">
-                      {selectedImage.tags.map(tag => (
-                        <span key={tag} className="modal-tag">
-                          {tag.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
+              {/* Right side - Quote text */}
+              <div className="w-full md:w-1/2 p-2 flex flex-col">
+                <div className="quote-modal-container bg-[#111827] rounded-lg overflow-hidden flex-grow">
+                  <p 
+                    className="text-xl text-white leading-relaxed p-6" 
+                    style={{
+                      fontFamily: '"Georgia", serif',
+                      fontStyle: 'italic',
+                      color: '#f0f0ff'
+                    }}
+                  >
+                    {selectedImage.highlightQuote}
+                  </p>
                 </div>
+              </div>
+            </div>
+
+            {/* Footer with LinkedIn link and tags */}
+            <div className="p-8 pt-4">
+              <a
+                href={selectedImage.linkedIn}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center text-[#70a5fd] hover:text-[#90b8fe] mb-6"
+              >
+                <Linkedin size={20} className="mr-2" />
+                <span>View LinkedIn Profile</span>
+              </a>
+              
+              <div className="flex flex-wrap gap-2 mt-2">
+                {selectedImage.tags.map(tag => (
+                  <span key={tag} className="px-3 py-1 bg-gray-800 rounded-full text-gray-300 text-sm">
+                    {tag.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+                  </span>
+                ))}
               </div>
             </div>
           </div>
         </div>
       )}
 
-      {/* Custom CSS */}
+      {/* Custom CSS for the modal */}
+      <style jsx>{`
+        /* Modal styling */
+        .modal-container {
+          animation: fadeIn 0.3s ease;
+          overflow-y: auto;
+        }
+        
+        .modal-content {
+          animation: scaleIn 0.3s ease;
+        }
+        
+        .linkedin-post-container {
+          position: relative;
+          transition: all 0.3s ease;
+        }
+        
+        .linkedin-post-container.fullscreen {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          z-index: 100;
+          background-color: rgba(0, 0, 0, 0.9);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 2rem;
+        }
+        
+        .linkedin-post-container.fullscreen img {
+          max-height: 90vh;
+          max-width: 90vw;
+          width: auto;
+          height: auto;
+          object-fit: contain;
+        }
+        
+        .quote-modal-container {
+          height: 100%;
+          overflow-y: auto;
+          border-left: 4px solid rgba(139, 92, 246, 0.3);
+        }
+        
+        .quote-modal-container::-webkit-scrollbar {
+          width: 5px;
+        }
+        
+        .quote-modal-container::-webkit-scrollbar-track {
+          background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .quote-modal-container::-webkit-scrollbar-thumb {
+          background: rgba(139, 92, 246, 0.3);
+          border-radius: 10px;
+        }
+        
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        
+        @keyframes scaleIn {
+          from { transform: scale(0.95); opacity: 0; }
+          to { transform: scale(1); opacity: 1; }
+        }
+        
+        @media (max-width: 768px) {
+          .modal-content {
+            flex-direction: column;
+          }
+        }
+      `}</style>
+
+      {/* Optimized CSS with reduced heights and paddings */}
       <style jsx>{`
         /* Animated gradient text */
         .gradient-animate {
@@ -539,7 +622,7 @@ const Citations = () => {
         .glow-line {
           position: relative;
           overflow: hidden;
-          box-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+          box-shadow: 0 0 5px rgba(139, 92, 246, 0.5);
         }
         
         .glow-line::after {
@@ -559,22 +642,22 @@ const Citations = () => {
         
         /* Quote container */
         .quote-container {
-          min-height: 350px;
-          background: rgba(30, 41, 59, 0.5);
+          min-height: 400px; /* INCREASED vertical height only */
+          background: rgba(17, 24, 39, 0.85); /* DARKER background to match screenshot */
           backdrop-filter: blur(8px);
-          border-radius: 16px;
-          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 12px;
+          border: 1px solid rgba(59, 130, 246, 0.1); /* Subtle blue border */
           padding: 2rem;
           display: flex;
           align-items: center;
           justify-content: center;
           transition: all 0.5s ease;
-          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
         }
         
         .quote-container.has-quote {
           border-color: rgba(139, 92, 246, 0.3);
-          box-shadow: 0 10px 30px rgba(139, 92, 246, 0.1);
+          box-shadow: 0 5px 15px rgba(139, 92, 246, 0.1);
         }
         
         .quote-content {
@@ -593,14 +676,15 @@ const Citations = () => {
         }
         
         .quote-mark {
-          font-size: 4rem;
+          font-size: 5rem; /* INCREASED size for more impact */
           line-height: 1;
-          color: rgba(139, 92, 246, 0.2);
+          color: rgba(59, 130, 246, 0.15); /* Blue tint to match the theme */
           position: absolute;
+          font-family: 'Georgia', serif;
         }
         
         .top-mark {
-          top: -2rem;
+          top: -2.5rem;
           left: -1rem;
         }
         
@@ -610,12 +694,32 @@ const Citations = () => {
         }
         
         .quote-text {
-          font-size: 1.25rem;
-          line-height: 1.7;
-          color: white;
+          font-size: 1.1rem;
+          line-height: 1.6;
           margin-bottom: 2rem;
-          text-align: center;
-          font-style: italic;
+          text-align: left;
+          max-height: 300px; /* INCREASED for more visible text */
+          overflow-y: auto;
+          padding-right: 0.5rem;
+        }
+        
+        /* Custom scrollbar for quote text */
+        .quote-text::-webkit-scrollbar {
+          width: 4px;
+        }
+        
+        .quote-text::-webkit-scrollbar-track {
+          background: rgba(255, 255, 255, 0.05);
+          border-radius: 10px;
+        }
+        
+        .quote-text::-webkit-scrollbar-thumb {
+          background: rgba(59, 130, 246, 0.3);
+          border-radius: 10px;
+        }
+        
+        .quote-text::-webkit-scrollbar-thumb:hover {
+          background: rgba(59, 130, 246, 0.5);
         }
         
         /* Citation details */
@@ -624,17 +728,17 @@ const Citations = () => {
           align-items: center;
           margin-top: 1.5rem;
           padding-top: 1.5rem;
-          border-top: 1px solid rgba(255, 255, 255, 0.1);
+          border-top: 1px solid rgba(59, 130, 246, 0.2); /* Blue-tinted border */
         }
         
         .avatar-container {
-          width: 70px;
-          height: 70px;
+          width: 50px; /* REDUCED from 70px */
+          height: 50px; /* REDUCED from 70px */
           border-radius: 50%;
           overflow: hidden;
-          border: 3px solid rgba(139, 92, 246, 0.5);
+          border: 2px solid rgba(139, 92, 246, 0.5); /* REDUCED from 3px */
           flex-shrink: 0;
-          margin-right: 1rem;
+          margin-right: 0.75rem; /* REDUCED from 1rem */
         }
         
         .avatar-image {
@@ -648,48 +752,48 @@ const Citations = () => {
         }
         
         .citation-name {
-          font-size: 1.1rem;
+          font-size: 1rem; /* REDUCED from 1.1rem */
           font-weight: 600;
           color: white;
-          margin-bottom: 0.25rem;
+          margin-bottom: 0.15rem; /* REDUCED from 0.25rem */
         }
         
         .citation-role {
-          font-size: 0.85rem;
+          font-size: 0.75rem; /* REDUCED from 0.85rem */
           color: #94a3b8;
-          margin-bottom: 0.5rem;
+          margin-bottom: 0.35rem; /* REDUCED from 0.5rem */
         }
         
         .citation-company {
           display: flex;
           flex-wrap: wrap;
-          gap: 0.5rem;
-          margin-bottom: 0.5rem;
+          gap: 0.35rem; /* REDUCED from 0.5rem */
+          margin-bottom: 0.35rem; /* REDUCED from 0.5rem */
         }
         
         .company-badge {
           display: inline-block;
-          padding: 0.15rem 0.6rem;
+          padding: 0.1rem 0.4rem; /* REDUCED from 0.15rem 0.6rem */
           background: rgba(59, 130, 246, 0.2);
           color: #93c5fd;
           border-radius: 20px;
-          font-size: 0.75rem;
+          font-size: 0.65rem; /* REDUCED from 0.75rem */
         }
         
         .prev-company-badge {
           display: inline-block;
-          padding: 0.15rem 0.6rem;
+          padding: 0.1rem 0.4rem; /* REDUCED from 0.15rem 0.6rem */
           background: rgba(139, 92, 246, 0.2);
           color: #c4b5fd;
           border-radius: 20px;
-          font-size: 0.75rem;
+          font-size: 0.65rem; /* REDUCED from 0.75rem */
         }
         
         .linkedin-link {
           display: inline-flex;
           align-items: center;
           color: #60a5fa;
-          font-size: 0.75rem;
+          font-size: 0.65rem; /* REDUCED from 0.75rem */
           transition: color 0.3s ease;
         }
         
@@ -699,45 +803,33 @@ const Citations = () => {
         }
         
         .tags-container {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 0.5rem;
-          margin-top: 1rem;
-          justify-content: center;
-        }
-        
-        .tag {
-          padding: 0.25rem 0.75rem;
-          background: rgba(255, 255, 255, 0.1);
-          border-radius: 20px;
-          font-size: 0.75rem;
-          color: #e2e8f0;
+          display: none; /* REMOVED to save space */
         }
         
         /* Testimonial cards in the grid */
         .testimonial-card {
           position: relative;
           background: rgba(30, 41, 59, 0.7);
-          border-radius: 12px;
+          border-radius: 8px; /* REDUCED from 12px */
           overflow: hidden;
           cursor: pointer;
           transition: all 0.3s ease;
-          border: 2px solid transparent;
+          border: 1px solid transparent; /* REDUCED from 2px */
         }
         
         .testimonial-card:hover {
-          transform: translateY(-5px);
-          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+          transform: translateY(-3px); /* REDUCED from -5px */
+          box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* REDUCED shadow */
         }
         
         .testimonial-card.active {
           border-color: rgba(139, 92, 246, 0.7);
-          box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+          box-shadow: 0 0 10px rgba(139, 92, 246, 0.3); /* REDUCED shadow */
         }
         
         .image-container {
           position: relative;
-          height: 200px;
+          height: 120px; /* REDUCED from 200px */
           overflow: hidden;
           background: #1f2937;
         }
@@ -780,39 +872,39 @@ const Citations = () => {
         
         .overlay-icon {
           background: rgba(139, 92, 246, 0.3);
-          width: 40px;
-          height: 40px;
+          width: 30px; /* REDUCED from 40px */
+          height: 30px; /* REDUCED from 40px */
           border-radius: 50%;
           display: flex;
           align-items: center;
           justify-content: center;
-          margin: 0 auto 0.5rem;
+          margin: 0 auto 0.35rem; /* REDUCED from 0.5rem */
           color: white;
         }
         
         .overlay-text {
           color: white;
-          font-size: 0.875rem;
+          font-size: 0.75rem; /* REDUCED from 0.875rem */
         }
         
         .card-footer {
-          padding: 1rem;
+          padding: 0.5rem; /* REDUCED from 1rem */
         }
         
         .card-name {
-          font-size: 1rem;
+          font-size: 0.85rem; /* REDUCED from 1rem */
           font-weight: 600;
           color: white;
-          margin-bottom: 0.25rem;
+          margin-bottom: 0.15rem; /* REDUCED from 0.25rem */
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
         }
         
         .card-role {
-          font-size: 0.875rem;
+          font-size: 0.75rem; /* REDUCED from 0.875rem */
           color: #94a3b8;
-          margin-bottom: 0.75rem;
+          margin-bottom: 0.5rem; /* REDUCED from 0.75rem */
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
@@ -820,13 +912,13 @@ const Citations = () => {
         
         .card-actions {
           display: flex;
-          justify-content: space-between;
+          justify-content: flex-end;
         }
         
         .view-full-btn,
         .linkedin-btn {
-          width: 30px;
-          height: 30px;
+          width: 22px; /* REDUCED from 30px */
+          height: 22px; /* REDUCED from 30px */
           border-radius: 50%;
           display: flex;
           align-items: center;
@@ -855,14 +947,14 @@ const Citations = () => {
         /* Relationship indicator - UPDATED for alternative images */
         .relationship-indicator {
           position: absolute;
-          top: 10px;
-          right: 10px;
-          width: 32px;
-          height: 32px;
+          top: 5px; /* REDUCED from 10px */
+          right: 5px; /* REDUCED from 10px */
+          width: 24px; /* REDUCED from 32px */
+          height: 24px; /* REDUCED from 32px */
           border-radius: 50%;
           overflow: hidden;
-          border: 2px solid rgba(255, 255, 255, 0.5);
-          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+          border: 1px solid rgba(255, 255, 255, 0.5); /* REDUCED from 2px */
+          box-shadow: 0 1px 5px rgba(0, 0, 0, 0.3); /* REDUCED shadow */
           z-index: 10;
         }
         
@@ -881,6 +973,7 @@ const Citations = () => {
           align-items: center;
           justify-content: center;
           border-radius: 50%;
+          font-size: 0.7rem; /* ADDED smaller font */
         }
         
         .relationship-indicator span[title="Colleague"] {
@@ -892,54 +985,12 @@ const Citations = () => {
           align-items: center;
           justify-content: center;
           border-radius: 50%;
+          font-size: 0.7rem; /* ADDED smaller font */
         }
         
-        /* Statistics cards */
-        .stat-card {
-          background: rgba(30, 41, 59, 0.5);
-          backdrop-filter: blur(10px);
-          border-radius: 16px;
-          padding: 1.5rem;
-          text-align: center;
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          transition: all 0.3s ease;
-        }
-        
-        .stat-card:hover {
-          transform: translateY(-5px);
-          border-color: rgba(139, 92, 246, 0.3);
-          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-        
-        .stat-icon {
-          margin: 0 auto;
-          width: 60px;
-          height: 60px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border-radius: 50%;
-          background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
-          color: white;
-          margin-bottom: 1rem;
-        }
-        
-        .stat-value {
-          font-size: 2.5rem;
-          font-weight: 700;
-          background: linear-gradient(to right, #3b82f6, #8b5cf6);
-          -webkit-background-clip: text;
-          background-clip: text;
-          color: transparent;
-          line-height: 1;
-          margin-bottom: 0.5rem;
-        }
-        
-        .stat-label {
-          color: #94a3b8;
-          font-size: 0.875rem;
-          text-transform: uppercase;
-          letter-spacing: 1px;
+        /* Statistics cards - REMOVED */
+        .stat-card, .stat-icon, .stat-value, .stat-label {
+          display: none;
         }
         
         /* Enhanced Modal Styling */
@@ -962,22 +1013,22 @@ const Citations = () => {
           display: flex;
           align-items: center;
           justify-content: center;
-          padding: 1rem;
+          padding: 0.75rem; /* REDUCED from 1rem */
         }
         
         .modal-image-container img {
           max-width: 100%;
-          max-height: 70vh;
+          max-height: 60vh; /* REDUCED from 70vh */
           object-fit: contain;
-          box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* REDUCED shadow */
           border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         .modal-quote-container {
           background: rgba(17, 24, 39, 0.95);
-          padding: 2rem;
+          padding: 1.25rem; /* REDUCED from 2rem */
           overflow-y: auto;
-          max-height: 70vh;
+          max-height: 60vh; /* REDUCED from 70vh */
         }
         
         .modal-quote-content {
@@ -985,54 +1036,54 @@ const Citations = () => {
         }
         
         .modal-quote-name {
-          font-size: 1.5rem;
+          font-size: 1.25rem; /* REDUCED from 1.5rem */
           font-weight: 700;
           color: white;
-          margin-bottom: 0.5rem;
+          margin-bottom: 0.35rem; /* REDUCED from 0.5rem */
         }
         
         .modal-quote-role {
-          font-size: 1rem;
+          font-size: 0.9rem; /* REDUCED from 1rem */
           color: #94a3b8;
-          margin-bottom: 1rem;
+          margin-bottom: 0.75rem; /* REDUCED from 1rem */
         }
         
         .modal-quote-company {
           display: flex;
           flex-wrap: wrap;
-          gap: 0.5rem;
-          margin-bottom: 1.5rem;
+          gap: 0.35rem; /* REDUCED from 0.5rem */
+          margin-bottom: 1rem; /* REDUCED from 1.5rem */
         }
         
         .modal-quote-text {
           position: relative;
-          font-size: 1.1rem;
-          line-height: 1.8;
+          font-size: 0.95rem; /* REDUCED from 1.1rem */
+          line-height: 1.6; /* REDUCED from 1.8 */
           color: white;
           background: rgba(30, 41, 59, 0.5);
-          border-radius: 12px;
-          padding: 2rem;
-          margin: 2rem 0;
+          border-radius: 10px; /* REDUCED from 12px */
+          padding: 1.5rem; /* REDUCED from 2rem */
+          margin: 1.5rem 0; /* REDUCED from 2rem */
           font-style: italic;
-          max-height: 300px;
+          max-height: 200px; /* REDUCED from 300px */
           overflow-y: auto;
         }
         
         .modal-quote-footer {
           display: flex;
           flex-direction: column;
-          gap: 1rem;
-          margin-top: 1rem;
+          gap: 0.75rem; /* REDUCED from 1rem */
+          margin-top: 0.75rem; /* REDUCED from 1rem */
           border-top: 1px solid rgba(255, 255, 255, 0.1);
-          padding-top: 1.5rem;
+          padding-top: 1rem; /* REDUCED from 1.5rem */
         }
         
         .modal-linkedin-link {
           display: inline-flex;
           align-items: center;
           color: #60a5fa;
-          font-size: 0.9rem;
-          padding: 0.5rem 1rem;
+          font-size: 0.8rem; /* REDUCED from 0.9rem */
+          padding: 0.35rem 0.75rem; /* REDUCED from 0.5rem 1rem */
           border-radius: 8px;
           background: rgba(59, 130, 246, 0.1);
           transition: all 0.3s ease;
@@ -1047,15 +1098,15 @@ const Citations = () => {
         .modal-tags {
           display: flex;
           flex-wrap: wrap;
-          gap: 0.5rem;
+          gap: 0.35rem; /* REDUCED from 0.5rem */
         }
         
         .modal-tag {
-          padding: 0.25rem 0.75rem;
+          padding: 0.2rem 0.6rem; /* REDUCED from 0.25rem 0.75rem */
           background: rgba(139, 92, 246, 0.1);
           border: 1px solid rgba(139, 92, 246, 0.3);
           border-radius: 20px;
-          font-size: 0.75rem;
+          font-size: 0.7rem; /* REDUCED from 0.75rem */
           color: #c4b5fd;
         }
         
@@ -1083,12 +1134,13 @@ const Citations = () => {
         /* Responsive adjustments */
         @media (max-width: 768px) {
           .quote-container {
-            min-height: 200px;
-            margin-bottom: 2rem;
+            min-height: 180px; /* REDUCED from 200px */
+            margin-bottom: 1.5rem; /* REDUCED from 2rem */
           }
           
           .quote-text {
-            font-size: 1rem;
+            font-size: 0.9rem; /* REDUCED from 1rem */
+            max-height: 160px; /* LIMIT height for mobile */
           }
           
           .citation-details {
@@ -1099,7 +1151,7 @@ const Citations = () => {
           
           .avatar-container {
             margin-right: 0;
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem; /* REDUCED from 1rem */
           }
           
           .modal-content {
@@ -1107,11 +1159,11 @@ const Citations = () => {
           }
           
           .modal-image-container {
-            max-height: 40vh;
+            max-height: 35vh; /* REDUCED from 40vh */
           }
           
           .modal-quote-container {
-            max-height: 50vh;
+            max-height: 45vh; /* REDUCED from 50vh */
           }
         }
           `}</style>

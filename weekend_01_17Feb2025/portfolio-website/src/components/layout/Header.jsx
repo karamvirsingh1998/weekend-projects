@@ -19,22 +19,10 @@ const Header = ({ activeSection, setActiveSection }) => {
       gradient: 'from-indigo-600 to-blue-600'
     },
     {
-      id: 'projects',
-      label: 'Projects',
-      icon: <LucideIcons.Briefcase size={20} />,
-      gradient: 'from-blue-600 to-cyan-600'
-    },
-    {
       id: 'skills',
       label: 'Skills',
       icon: <LucideIcons.Code2 size={20} />,
       gradient: 'from-cyan-600 to-teal-600'
-    },
-    {
-      id: 'research',
-      label: 'Research',
-      icon: <LucideIcons.GraduationCap size={20} />,
-      gradient: 'from-teal-600 to-green-600'
     },
     {
       id: 'citations',
@@ -43,16 +31,28 @@ const Header = ({ activeSection, setActiveSection }) => {
       gradient: 'from-green-600 to-emerald-600'
     },
     {
-      id: 'interests',
-      label: 'Interests',
-      icon: <LucideIcons.Heart size={20} />,
-      gradient: 'from-emerald-600 to-yellow-600'
+      id: 'projects',
+      label: 'Projects',
+      icon: <LucideIcons.Briefcase size={20} />,
+      gradient: 'from-blue-600 to-cyan-600'
+    },
+    {
+      id: 'research',
+      label: 'Research',
+      icon: <LucideIcons.GraduationCap size={20} />,
+      gradient: 'from-teal-600 to-green-600'
     },
     {
       id: 'ideas',
       label: 'Ideas',
       icon: <LucideIcons.Lightbulb size={20} />,
       gradient: 'from-yellow-600 to-orange-600'
+    },
+    {
+      id: 'interests',
+      label: 'Interests',
+      icon: <LucideIcons.Heart size={20} />,
+      gradient: 'from-emerald-600 to-yellow-600'
     },
     {
       id: 'contact',
