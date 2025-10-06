@@ -1,1 +1,2 @@
 /bin/bash: /Users/karamvirsingh/Downloads/Repos/weekend-projects/random_commit.sh: Operation not permitted
+/bin/bash: /Users/karamvirsingh/Downloads/Repos/weekend-projects/random_commit.sh: Operation not permitted
