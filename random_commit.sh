@@ -23,6 +23,6 @@ for ((i=1; i<=N; i++)); do
   echo "✅ Commit #$i pushed."
 
   # Wait random 5–30 minutes before next commit
-  sleep 30
+  sleep 
 done
 
