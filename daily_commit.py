@@ -90,7 +90,11 @@ def main():
     result = run_git_command(["git", "remote", "get-url", "origin"])
     if result and result.strip():
         print("\n🔄 Pushing to remote...")
-        push_result = run_git_command(["git", "push"])
+        # Get current branch name
+        branch_result = run_git_command(["git", "branch", "--show-current"])
+        branch = branch_result.strip() if branch_result else "main"
+        
+        push_result = run_git_command(["git", "push", "origin", branch])
         if push_result is not None:
             print("✅ Push successful")
         else:
