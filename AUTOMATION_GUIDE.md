@@ -2,7 +2,7 @@
 
 ## ✅ WORKING SOLUTION (Choose ONE)
 
-### Option 1: Simple Cron Job (RECOMMENDED - Easiest)
+### Option 1: Simple Cron Job (RECOMMENDED)
 
 Just add this to your crontab:
 
