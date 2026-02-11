@@ -1,4 +1,3 @@
-# Daily Commit Automation - Setup Guide
 
 ## ✅ WORKING SOLUTION (Choose ONE)
 
