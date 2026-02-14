@@ -1,0 +1,42 @@
+name: Daily Auto Push
+
+on:
+  schedule:
+    # Runs every day at 00:00 UTC (adjust timezone as needed)
+    # Format: minute hour day month day-of-week
+    - cron: '0 0 * * *'
+  workflow_dispatch: # Allows manual triggering
+
+jobs:
+  daily-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Required to push commits
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          # Using your actual GitHub email - commits WILL count as your contributions
+          # Make sure karamvirh71@gmail.com is verified in GitHub Settings > Emails
+          git config --local user.email "karamvirh71@gmail.com"
+          git config --local user.name "karamvirsingh1998"
+
+      - name: Create or update daily log
+        run: |
+          DATE=$(date +%Y-%m-%d)
+          TIME=$(date +%H:%M:%S)
+          echo "Daily commit: $DATE at $TIME" >> daily-commits.log
+          echo "Last updated: $(date)" >> daily-commits.log
+          echo "" >> daily-commits.log
+
+      - name: Commit and push
+        run: |
+          git add daily-commits.log
+          git diff --staged --quiet || git commit -m "Daily auto-commit: $(date +%Y-%m-%d)"
+          git push origin main
