@@ -31,12 +31,13 @@ jobs:
         run: |
           DATE=$(date +%Y-%m-%d)
           TIME=$(date +%H:%M:%S)
-          echo "Daily commit: $DATE at $TIME" >> daily-commits.log
-          echo "Last updated: $(date)" >> daily-commits.log
-          echo "" >> daily-commits.log
+          mkdir -p weekend-projects
+          echo "Daily commit: $DATE at $TIME" >> weekend-projects/daily-commits.log
+          echo "Last updated: $(date)" >> weekend-projects/daily-commits.log
+          echo "" >> weekend-projects/daily-commits.log
 
       - name: Commit and push
         run: |
-          git add daily-commits.log
+          git add weekend-projects/daily-commits.log
           git diff --staged --quiet || git commit -m "Daily auto-commit: $(date +%Y-%m-%d)"
           git push origin main
