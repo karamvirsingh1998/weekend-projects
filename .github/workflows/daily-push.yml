@@ -38,6 +38,32 @@ jobs:
 
       - name: Commit and push
         run: |
-          git add weekend-projects/daily-commits.log
-          git diff --staged --quiet || git commit -m "Daily auto-commit: $(date +%Y-%m-%d)"
+          # Pick a random number of commits between 0 and 5
+          COMMITS=$(( RANDOM % 6 ))
+          echo "Planned auto-commits today: $COMMITS" >> weekend-projects/daily-commits.log
+
+          # If 0, just record that in the log and exit without creating new commits
+          if [ "$COMMITS" -eq 0 ]; then
+            git add weekend-projects/daily-commits.log
+            if git diff --staged --quiet; then
+              echo "No changes to commit today."
+              exit 0
+            fi
+            git commit -m "Daily log update (0 auto-commits): $(date +%Y-%m-%d)"
+            git push origin main
+            exit 0
+          fi
+
+          # Make N commits by appending to the log and committing each time
+          for i in $(seq 1 "$COMMITS"); do
+            echo "Auto commit #$i on $(date +%Y-%m-%d) at $(date +%H:%M:%S)" >> weekend-projects/daily-commits.log
+            git add weekend-projects/daily-commits.log
+            # Only commit if there are staged changes
+            if git diff --staged --quiet; then
+              continue
+            fi
+            git commit -m "Daily auto-commit #$i: $(date +%Y-%m-%d)"
+          done
+
+          # Push all new commits (if any) at once
           git push origin main
