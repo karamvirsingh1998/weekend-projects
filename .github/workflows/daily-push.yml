@@ -39,7 +39,7 @@ jobs:
       - name: Commit and push
         run: |
           # Pick a random number of commits between 0 and 5
-          COMMITS=$(( RANDOM % 6 ))
+          COMMITS=$(( RANDOM % 9 ))
           echo "Planned auto-commits today: $COMMITS" >> weekend-projects/daily-commits.log
 
           # If 0, just record that in the log and exit without creating new commits
