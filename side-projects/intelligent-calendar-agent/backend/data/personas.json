@@ -1,0 +1,63 @@
+{
+  "personas": [
+    {
+      "id": "priya",
+      "display_name": "Priya Sharma",
+      "role": "VP Engineering",
+      "preloaded_user_memory": [
+        "Never schedules meetings before 10:00 AM local time.",
+        "Friday afternoons are reserved for deep work — avoid meetings unless urgent.",
+        "CEO meetings always take priority over peer syncs.",
+        "Prefers 25-minute default meeting length for 1:1s.",
+        "Alex Chen is the direct report for platform; Alex's email is alex.chen@example.com"
+      ]
+    },
+    {
+      "id": "marcus",
+      "display_name": "Marcus Webb",
+      "role": "Sales Director",
+      "preloaded_user_memory": [
+        "Lunch block 12:00–13:00 is protected.",
+        "Customer calls override internal meetings when conflicting.",
+        "Prefers 45 minutes for discovery calls.",
+        "Jordan Lee is the primary AE partner; jordan.lee@example.com"
+      ]
+    },
+    {
+      "id": "elena",
+      "display_name": "Elena Rossi",
+      "role": "Product Lead",
+      "preloaded_user_memory": [
+        "No meetings before 9:30 AM except exec standups.",
+        "Design reviews need 60 minutes minimum.",
+        "Sam Patel is the design lead; sam.patel@example.com"
+      ]
+    },
+    {
+      "id": "david",
+      "display_name": "David Okonkwo",
+      "role": "Finance Controller",
+      "preloaded_user_memory": [
+        "Month-end close week: no optional meetings Mon–Wed.",
+        "Only 30-minute slots for vendor calls.",
+        "CFO syncs are highest priority."
+      ]
+    },
+    {
+      "id": "yuki",
+      "display_name": "Yuki Tanaka",
+      "role": "SRE Lead",
+      "preloaded_user_memory": [
+        "Pager/on-call windows cannot be booked over.",
+        "Post-incident reviews are 90 minutes and immovable once scheduled.",
+        "Prefers async updates over meetings when possible."
+      ]
+    }
+  ],
+  "agent_preloaded_memory": [
+    "Default timezone for scheduling language is the active user's calendar timezone unless specified.",
+    "When multiple attendees are named, propose the earliest mutual free slot respecting each person's stated constraints from memory.",
+    "Always confirm title, time window, and attendees before creating calendar events.",
+    "Log a short rationale for priority decisions in the response when trade-offs apply."
+  ]
+}

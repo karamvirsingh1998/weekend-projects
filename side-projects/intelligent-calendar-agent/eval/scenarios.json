@@ -1,0 +1,73 @@
+[
+  {
+    "id": "chitchat_greeting",
+    "user_id": "priya",
+    "message": "Hi — quick hello before we jump into the week.",
+    "expect": {
+      "intent": "chitchat",
+      "reply_not_empty": true,
+      "tool_rounds_max": 0
+    }
+  },
+  {
+    "id": "appointment_list_events_tool",
+    "user_id": "priya",
+    "message": "List my calendar events between 2026-04-14T12:00:00Z and 2026-04-14T18:00:00Z. Summarize what you find.",
+    "expect": {
+      "intent": "appointment",
+      "reply_not_empty": true,
+      "tool_names_all": ["calendar_list_events"],
+      "tool_rounds_min": 1
+    }
+  },
+  {
+    "id": "appointment_create_event_mock",
+    "user_id": "marcus",
+    "message": "Create a calendar event titled Eval Harness Meeting from 2026-04-15T15:00:00Z to 2026-04-15T15:30:00Z.",
+    "expect": {
+      "intent": "appointment",
+      "tool_names_all": ["calendar_create_event"],
+      "mock_event_title_contains": "Eval"
+    }
+  },
+  {
+    "id": "memory_constraint_before_10",
+    "user_id": "priya",
+    "message": "Schedule a 1-hour meeting titled Memory Constraint Test from 2026-04-16T08:00:00Z to 2026-04-16T09:00:00Z. If that violates my stored rules, refuse or propose a compliant alternative and explain briefly.",
+    "expect": {
+      "intent": "appointment",
+      "reply_contains_any": ["10", "before 10", "constraint", "deep work", "alternative", "move", "local", "reschedule"]
+    }
+  },
+  {
+    "id": "memory_recall_agent_timezone_rule",
+    "user_id": "elena",
+    "message": "In one short sentence: according to global assistant memory, what do we assume about timezone when the user does not specify one?",
+    "expect": {
+      "intent_one_of": ["chitchat", "appointment"],
+      "reply_not_empty": true,
+      "reply_contains_any": ["timezone", "calendar", "active", "user", "default"]
+    }
+  },
+  {
+    "id": "appointment_freebusy_or_list",
+    "user_id": "david",
+    "message": "Between 2026-04-10T09:00:00Z and 2026-04-10T17:00:00Z, check whether I appear busy on the primary calendar and answer in one sentence.",
+    "expect": {
+      "intent": "appointment",
+      "reply_not_empty": true,
+      "tool_names_one_of": ["calendar_freebusy", "calendar_list_events"],
+      "tool_rounds_min": 1
+    }
+  },
+  {
+    "id": "chitchat_not_calendar_tools",
+    "user_id": "yuki",
+    "message": "Thanks — that was helpful. Have a good one.",
+    "expect": {
+      "intent": "chitchat",
+      "reply_not_empty": true,
+      "tool_rounds_max": 0
+    }
+  }
+]
