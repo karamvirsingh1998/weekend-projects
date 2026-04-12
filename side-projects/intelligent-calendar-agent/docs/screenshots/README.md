@@ -1,9 +1,9 @@
 # Demo screenshots
 
-Place static demo images here (e.g. PNG) and reference them from your submission.
+Images are embedded in the root **[README.md](../../README.md)**. Files:
 
-Suggested filenames:
-
-- `01_chat.png` — scheduling or chitchat in the main UI  
-- `02_persona_memory.png` — persona selector and memory panels  
-- `03_oauth_or_tools.png` — Google link flow or eval / mock calendar note  
+- `01_chat_scheduling.png`
+- `02_persona_memory.png`
+- `03_google.png`
+- `04_memory_rule.png`
+- `05_eval_success.png`

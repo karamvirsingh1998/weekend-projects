@@ -1,39 +1,172 @@
 # Intelligent Calendar Agent (MVP)
 
-**Problem.** Scheduling is high-friction: calendar Tetris, long email threads, and tools that either only expose slots (Calendly) or stay fully manual. This project is a small **AI executive-assistant** slice: it reasons about **constraints and priorities** (e.g. deep work, who outranks whom), not only about empty slots.
-
-**What this repo delivers (assignment mapping).**
-
-| Deliverable | Where |
-|-------------|--------|
-| Agent + calendar tools (list / create / update / delete / free-busy) | `backend/app/agent_runner.py`, `calendar_facade.py`, `calendar_google.py` / `calendar_mock.py` |
-| Persistent user + global “agent” memory | SQLite via `store.py`; seeds `data/personas.json`; idle consolidation `consolidation.py` |
-| OAuth session (Google Calendar) | `main.py` OAuth routes, `Store` for tokens |
-| Observability | Structured logs (`observability.py`), tool traces in API responses |
-| Automated evaluation | `eval/scenarios.json` + `eval/run_eval.py` → **`EVALUATION.md`** |
-| Technical write-up | This file + `docs/ARCHITECTURE.md` |
-| Demo | **Screenshots:** add files under `docs/screenshots/` (see below) |
-
-**Out of scope for this MVP.** Outlook / Microsoft Graph; true multi-calendar free-busy across *other people’s* tenants; full product auth for arbitrary end users. The UI uses **personas** to simulate multiple profiles against one backend; with Google enabled, one OAuth’d calendar is shared (events tagged with `persona_id` in extended properties).
+An **AI executive-assistant** slice for scheduling: it respects **long-term rules** (e.g. no meetings before 10:00, deep-work blocks, priority of exec vs peer), not only empty slots. Integrates with **Google Calendar** (or an in-memory **mock**), keeps **persistent memory** per persona, and ships with an **automated evaluation** suite.
 
 ---
 
-## Approach (how it works)
+## Table of contents
 
-1. **Intent** — A small LLM call classifies each user message as **chitchat** vs **appointment** so calendar tools are only injected when scheduling is relevant.
-2. **Memory** — Per-user and global strings are loaded from SQLite and prepended to the system prompt (no vector DB in v1). Rules like “no meetings before 10:00” apply on every turn without re-stating them.
-3. **Tools** — The model calls **list / create / update / delete / freebusy** through a **facade** that switches between an in-memory **mock** calendar (default) and **Google Calendar API** after OAuth (`MOCK_CALENDAR_DEFAULT=false`).
-4. **Reliability** — Tool JSON is parsed defensively; errors return structured `ok: false` payloads so the model can retry or explain. Logs carry `req_id`, intent, and tool summaries for debugging.
+1. [Features & scope](#features--scope)  
+2. [Runtime architecture](#runtime-architecture)  
+3. [Evaluation architecture](#evaluation-architecture)  
+4. [Screenshots (demo)](#screenshots-demo)  
+5. [Repository layout](#repository-layout)  
+6. [Quickstart](#quickstart)  
+7. [Trade-offs](#trade-offs)  
+8. [Future enhancements](#future-enhancements)  
+
+---
+
+## Features & scope
+
+| Area | What you get |
+|------|----------------|
+| **Calendar** | List, create, update, delete, free/busy via tools; **mock** by default, **Google** when OAuth + `MOCK_CALENDAR_DEFAULT=false`. |
+| **Memory** | SQLite-backed **user** + **global agent** strings; seeded from `backend/data/personas.json`; optional idle-time consolidation. |
+| **Intent** | `chitchat` vs `appointment` so tools attach only when scheduling is relevant. |
+| **Auth** | OAuth 2.0 (Web client) with backend callback URI; tokens in SQLite. |
+| **Observability** | Structured logs (`req_id`, intent, tool summaries); API can return tool traces. |
+| **QA** | `eval/scenarios.json` + `eval/run_eval.py` → success rate + **`EVALUATION.md`**. |
+
+**Out of scope (MVP):** Microsoft Outlook / Graph; org-wide multi-calendar free-busy across other tenants; full SaaS multi-tenant auth. Personas share one Google calendar when live OAuth is enabled (`persona_id` on events for traceability).
+
+---
+
+## Runtime architecture
+
+### Component diagram
+
+```mermaid
+flowchart TB
+  subgraph client["Browser"]
+    UI["Vite + React\nChat · personas · memory panels"]
+  end
+  subgraph api["FastAPI backend"]
+    HTTP["/api/chat · /api/memory · OAuth routes"]
+    Agent["agent_runner\nintent · LLM · tools"]
+    Facade["CalendarFacade"]
+    Store["SQLite Store\nmemory · sessions · oauth_tokens"]
+  end
+  subgraph cal["Calendar backends"]
+    Mock["MockCalendar\nin-memory events"]
+    Google["Google Calendar API\nvia OAuth tokens"]
+  end
+  subgraph llm["OpenAI"]
+    GPT["Chat completions\n+ tool calls"]
+  end
+  UI -->|"HTTP /api proxied"| HTTP
+  HTTP --> Agent
+  Agent --> GPT
+  Agent --> Facade
+  Facade --> Mock
+  Facade --> Google
+  HTTP --> Store
+  Agent --> Store
+```
+
+### Request path (one chat turn)
+
+```mermaid
+sequenceDiagram
+  participant U as User
+  participant UI as Frontend
+  participant API as FastAPI
+  participant I as Intent classifier
+  participant L as LLM + tools
+  participant F as CalendarFacade
+  participant C as Mock or Google
+  U->>UI: Message
+  UI->>API: POST /api/chat
+  API->>I: classify chitchat vs appointment
+  alt appointment
+    API->>L: system + memory + tools
+    L->>F: tool calls list/create/...
+    F->>C: calendar ops
+    C-->>F: JSON result
+    F-->>L: tool payload
+    L-->>API: final reply + meta
+  else chitchat
+    API->>L: system + memory, no tools
+    L-->>API: reply + meta
+  end
+  API-->>UI: reply, intent, observability
+```
+
+**Key files:** `backend/app/main.py` (HTTP), `agent_runner.py` (intent + tool loop), `calendar_facade.py` (routing), `calendar_mock.py` / `calendar_google.py`, `store.py`, `config.py`.
+
+---
+
+## Evaluation architecture
+
+Offline runs use the **same agent code** as production, with an **isolated SQLite file** and **fresh `MockCalendar` per scenario** (no network to Google unless you change that).
+
+```mermaid
+flowchart LR
+  SJ["scenarios.json\nmessages + expect"]
+  RE["run_eval.py"]
+  TMP["Temp DB + MockCalendar\nper scenario"]
+  AR["run_agent_turn\nOpenAI + tools"]
+  CHK["Assertions\nintent · tools · phrases · mock titles"]
+  EV["EVALUATION.md\n+ JSON stdout"]
+  SJ --> RE
+  RE --> TMP
+  RE --> AR
+  AR --> CHK
+  CHK --> EV
+```
+
+**What gets checked**
+
+| Check | Meaning |
+|-------|--------|
+| `intent` / `intent_one_of` | Matches routing label from the classifier. |
+| `tool_names_all` / `tool_names_one_of` | Tools actually recorded in `decision_log` (flow correctness). |
+| `tool_rounds_min` / `max` | How many tool rounds executed. |
+| `reply_contains_any` / `all` | Substrings in the assistant reply (OR vs AND). |
+| `mock_event_title_contains` | Mock calendar state after the turn. |
+
+**Run:** from repo root, `python eval/run_eval.py` (reads `backend/.env` for `OPENAI_API_KEY`). Flags: `--list`, `-v`, `--scenario <id>`.
+
+---
+
+## Screenshots (demo)
+
+### Natural-language scheduling (chat)
+
+![Chat: scheduling request and assistant reply](docs/screenshots/01_chat_scheduling.png)
+
+### Personas and memory panels
+
+![Sidebar: persona selector and long-term / agent memory](docs/screenshots/02_persona_memory.png)
+
+### Google Calendar link (OAuth)
+
+![Header: Link Google Calendar](docs/screenshots/03_google.png)
+
+### Rule adherence (memory constraint)
+
+![Assistant respecting a stored scheduling rule](docs/screenshots/04_memory_rule.png)
+
+### Automated evaluation (success rate)
+
+![Eval run output: 7/7 scenarios](docs/screenshots/05_eval_success.png)
 
 ---
 
 ## Repository layout
 
-- `backend/` — FastAPI, SQLite, OAuth, agent.
-- `frontend/` — Vite + React chat UI (personas, memory panels, **Link Google Calendar**).
-- `eval/` — Benchmark scenarios and runner.
-- `docs/screenshots/` — **Demo images** (you can drop your captures here).
-- `EVALUATION.md` — **Auto-generated** success rate and timings (run `eval/run_eval.py`).
+```
+intelligent-calendar-agent/
+├── backend/app/          # FastAPI, agent, facade, OAuth, store
+├── backend/data/         # personas.json seeds
+├── frontend/             # Vite + React UI
+├── eval/                 # scenarios.json, run_eval.py
+├── docs/screenshots/     # Demo images (referenced above)
+├── EVALUATION.md         # Generated report (git-tracked after eval)
+└── README.md             # This file
+```
+
+`docs/ARCHITECTURE.md` is a short stub; **this README** is the full technical overview.
 
 ---
 
@@ -44,7 +177,7 @@
 ```bash
 cd side-projects/intelligent-calendar-agent/backend
 cp .env.example .env
-# OPENAI_API_KEY=...  GOOGLE_* optional for live Calendar
+# Set OPENAI_API_KEY=...  and optionally GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
@@ -57,51 +190,51 @@ cd side-projects/intelligent-calendar-agent/frontend
 npm install && npm run dev
 ```
 
-Open the URL Vite prints (often `http://localhost:5173`). API is proxied to port **8000**.
+Open the URL Vite prints (e.g. `http://localhost:5173`); `/api` proxies to port **8000**.
 
-**Google Calendar (optional)** — Enable Calendar API; create an OAuth **Web** client; in **Authorized redirect URIs** add `http://localhost:8000/api/auth/google/callback` (see `GET /api/auth/google/status`). Set `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, then use **Link Google Calendar**. If the consent app is in **Testing**, add your Gmail under **Test users**. If `redirect_uri` errors persist, ensure no stale shell `export GOOGLE_REDIRECT_URI` overrides `backend/.env` (`unset GOOGLE_REDIRECT_URI`).
-
----
-
-## Evaluation strategy & metrics
-
-- **Scenarios** live in `eval/scenarios.json`: intent, **which tools ran** (flow accuracy), mock calendar side effects, and memory-aware replies.
-- **Success rate** = fraction of scenarios where every check in `expect` passes (binary per case). The runner also records **latency per scenario** and writes **`EVALUATION.md`**.
-- **Run:** `python eval/run_eval.py` from the project root (loads `backend/.env` for the API key). Use `-v` and `--scenario <id>` for debugging.
-
-Details of fields (`reply_contains_any`, `tool_names_all`, etc.) are in `eval/run_eval.py`.
+**Google OAuth (optional)** — Calendar API enabled; OAuth **Web** client; **Authorized redirect URI** `http://localhost:8000/api/auth/google/callback` (see `GET /api/auth/google/status`). Consent screen **Testing** → add your Gmail as **Test user**. If `redirect_uri` errors: ensure no stale shell `export GOOGLE_REDIRECT_URI` (`unset GOOGLE_REDIRECT_URI`).
 
 ---
 
 ## Trade-offs
 
-- **Model:** `gpt-4o-mini` — good latency/cost for tool-calling; harder multi-party scheduling may need a larger model or a dedicated planner step.
-- **Memory:** Plain-string store + full prompt injection — simple and debuggable; does not scale to thousands of facts (embeddings + retrieval would be the next step).
-- **Calendar:** Mock by default for CI and demos; one Google account for live demos.
+| Decision | Why |
+|----------|-----|
+| **`gpt-4o-mini`** | Low latency/cost; good enough for tool-calling MVP; harder multi-party negotiation may need a planner or larger model. |
+| **String memory + full prompt** | Simple to debug and version; breaks past ~hundreds of facts per user → embeddings next. |
+| **Mock default** | Reproducible eval and demos without Google; flip one flag for live API. |
+| **Single OAuth calendar for demos** | One refresh token; personas distinguished via metadata, not separate Google accounts. |
 
 ---
 
 ## Future enhancements
 
-- **Classical ML / structured side:** Train a **intent + slot** model (or linear / gradient-boosted classifier) on labeled utterances for faster/cheaper routing; use **constraint solvers** (ILP / CP-SAT) for “find a mutual slot” instead of pure LLM guessing.
-- **Skills / multi-agent:** Split **router**, **calendar tool executor**, and **memory writer** into separate agents or tool-skills with explicit contracts; add a **verifier** step that checks proposed events against hard rules before API calls.
-- **Retrieval:** Embedding index over memories + past meetings; **RAG** for “what did we decide about Alex?”
-- **Product:** Outlook/Microsoft Graph, org-wide free-busy, notifications, and full multi-tenant auth.
+### Near term (product + reliability)
+
+- **Outlook / Microsoft Graph** for enterprise parity.  
+- **True multi-user free-busy** (service accounts or delegated calendars).  
+- **Stronger guardrails:** deterministic pre-check of proposed slots against parsed rules before `create_event`.  
+- **Rate-limit handling:** exponential backoff and user-visible retry for Google APIs.
+
+### Classical ML & optimization
+
+- **Lightweight intent + slot tagging** (logistic regression, small transformer, or CRF) trained on labeled utterances → cheaper routing than an LLM call every turn.  
+- **Constraint programming (CP-SAT / ILP)** for “find mutually free window” given hard intervals — complements the LLM for correctness.  
+- **Learning-to-rank** for meeting importance from past accept/decline behavior.
+
+### Agent / system design
+
+- **Multi-agent or skills pattern:** dedicated **Router**, **Calendar executor**, **Memory writer**, **Verifier** (last mile check before API commit).  
+- **RAG** over meeting notes and memory blobs for “what did we agree with Alex?”  
+- **Streaming + partial tool confirmation** in the UI for transparency.
+
+### Evaluation
+
+- **Regression suite on CI** (API key via secret); **flaky-test** detection with multiple seeds.  
+- **Human eval rubric** export (CSV) for subjective quality alongside automated checks.
 
 ---
 
-## Demo (screenshots)
+## License / security
 
-Add your captures under **`docs/screenshots/`**, for example:
-
-- `01_chat_scheduling.png` — natural-language scheduling in the chat UI  
-- `02_memory_sidebar.png` — persona + memory panels  
-- `03_google_link_or_eval.png` — OAuth or mock/eval relevant screen  
-
-Reference them in your write-up or deck as needed.
-
----
-
-## License / note
-
-Do not commit real `.env` secrets. Rotate keys if they were ever shared.
+Do not commit `backend/.env` with real secrets. Rotate keys if exposed.
